@@ -24,11 +24,14 @@ To donwload libraries, in your Arduino IDE, go to Tools > Manage libraries and s
 ## Creating the telegram bot
 1. Open the Telegram app
 2. Search for the account @BotFather
+
 ![BotFather](https://github.com/user-attachments/assets/3096c19e-12bb-485b-8a38-8afeb0c9a6bb)
+
 3. Start the bot and send and send "/newbot"
 4. Give the bot a name (the name must be unique, so it may take a few tries)
 
 ## Code
+Nextup is the code required to make it all work. It is basicaly the echobot by Tolentino Cotesta with a few additions.
 ```C
 /*Based on:
   Name:        echoBot.ino
@@ -47,15 +50,21 @@ To donwload libraries, in your Arduino IDE, go to Tools > Manage libraries and s
   You can use AsyncTelegram2 even with other MCUs or transport layer (ex. Ethernet)
   With SSLClient, be sure "certificates.h" file is present in sketch folder
 */ 
-#define USE_CLIENTSSL true  
-
+#define USE_CLIENTSSL true  //I have no idea what this does, so I didn't touch it.
+```
+First we will call the required libraries and define some values. 
+```C
 #include <AsyncTelegram2.h>
 #include <Adafruit_NeoPixel.h>
-#define LED_PIN    D1          // LED strip data pin connected to D5 (GPIO14)
-#define NUM_LEDS 10
 
-Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
+#define LED_PIN    D1          // The pin on your board that is connected to the dataport on your LED strip
+#define NUM_LEDS 10            // Number of leds on your LED strip
 
+Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800); // The code that allows you to use all the strip.XX code later on.
+```
+
+Next up is the code that prepares for the wifi setup. I did not create it so I don't really understand it, but it works.
+```C
 // Timezone definition
 #include <time.h>
 #define MYTZ "CET-1CEST,M3.5.0,M10.5.0/3"
@@ -81,7 +90,9 @@ Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 #endif
 
 AsyncTelegram2 myBot(client);
-
+```
+In the part below you add the details of your hotspot and the token of your telegram bot. You can also add a userID to your bot, to prevent it from being used by others.
+```C
 const char* ssid  =  "*Insert your hotspot name here*";     // SSID WiFi network
 const char* pass  =  "*Insert your hotspot password here*";     // Password  WiFi network
 const char* token =  "*Insert the telegram token of your bot here*";  // Telegram token
@@ -91,9 +102,11 @@ const char* token =  "*Insert the telegram token of your bot here*";  // Telegra
 int64_t userid = 123456789;  
 
 
-// Name of public channel (your bot must be in admin group)
+// Name of public channel (your bot must be in admin group) (Once again no clue what this does, I don't think it is necesary, but I left it just in case)
 const char* channel = "@tolentino_cotesta";
-
+```
+The next part is to set up the rainbow lights, so you can call them later.
+```C
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
   if (WheelPos < 85) {
@@ -117,7 +130,9 @@ void rainbowCycle(uint8_t wait) {
     delay(wait);
   }
 }
-
+```
+Then
+```C
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   strip.begin();
