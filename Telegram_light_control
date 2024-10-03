@@ -1,196 +1,154 @@
 # Handleiding voor het aansturen van een NodeMCU via Telegram
 
-/*Adapted from:
-  Name:        echoBot.ino
-  Created:     26/03/2021
-  Author:      Tolentino Cotesta <cotestatnt@yahoo.com>
-  Description: a simple example that check for incoming messages
-               and reply the sender with the received message.
-                 The message will be forwarded also in a public channel
-                 anad to a specific userid.
-*/
+## Inleiding
 
+In deze handleiding leer je hoe je een NodeMCU kunt aansturen met Telegram. We maken gebruik van de Telegram Bot API om je NodeMCU te laten communiceren via Telegram. Volg de onderstaande stappen zorgvuldig.
 
-/* 
-  Set true if you want use external library for SSL connection instead ESP32@WiFiClientSecure 
-  For example https://github.com/OPEnSLab-OSU/SSLClient/ is very efficient BearSSL library.
-  You can use AsyncTelegram2 even with other MCUs or transport layer (ex. Ethernet)
-  With SSLClient, be sure "certificates.h" file is present in sketch folder
-*/ 
-#define USE_CLIENTSSL true  
+> Als je ergens vast loopt kijk aan het einde van de handleiding voor de FME (Frequently Made Errors)
 
-#include <AsyncTelegram2.h>
-#include <Adafruit_NeoPixel.h>
-#define LED_PIN    D1          // LED strip data pin connected to D5 (GPIO14)
-#define NUM_LEDS 10
+## Benodigdheden
 
-Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
+- Een NodeMCU (ESP8266)
+- Een computer met Arduino IDE geïnstalleerd
+- Telegram-app op je smartphone
+- Internetverbinding
 
-// Timezone definition
-#include <time.h>
-#define MYTZ "CET-1CEST,M3.5.0,M10.5.0/3"
+## Stappen
 
-#ifdef ESP8266
-  #include <ESP8266WiFi.h>
-  BearSSL::WiFiClientSecure client;
-  BearSSL::Session   session;
-  BearSSL::X509List  certificate(telegram_cert);
-  
-#elif defined(ESP32)
-  #include <WiFi.h>
-  #include <WiFiClient.h>
-  #if USE_CLIENTSSL
-    #include <SSLClient.h>  
-    #include "tg_certificate.h"
-    WiFiClient base_client;
-    SSLClient client(base_client, TAs, (size_t)TAs_NUM, A0, 1, SSLClient::SSL_ERROR);
-  #else
-    #include <WiFiClientSecure.h>
-    WiFiClientSecure client;  
-  #endif
-#endif
+### 1. Maak een Telegram-account aan
 
-AsyncTelegram2 myBot(client);
+1. Installeer de Telegram-app op je smartphone.
+2. Open de app en maak een account aan door je telefoonnummer te verifiëren.
 
-const char* ssid  =  "J.D.";     // SSID WiFi network
-const char* pass  =  "planetofthekiwis";     // Password  WiFi network
-const char* token =  "7781926091:AAHZLEKHVBM5pdZdFisZEMhXw9o5obVpP6E";  // Telegram token
+### 2. Maak een bot aan via BotFather
 
-// Target user can find it's own userid with the bot @JsonDumpBot
-// https://t.me/JsonDumpBot
-int64_t userid = 123456789;  
+1. Zoek in de Telegram-app naar de gebruiker **BotFather**. Dit is de officiële bot om nieuwe bots aan te maken.
+2. Start een chat met BotFather en typ het commando `/newbot`.
+3. Volg de instructies om je nieuwe bot een naam en gebruikersnaam te geven.
+4. Na het aanmaken ontvang je een API-token (een lange reeks tekens). Noteer deze, want je hebt hem later nodig.
 
+### 3. Installeer de benodigde bibliotheken in Arduino IDE
 
-// Name of public channel (your bot must be in admin group)
-const char* channel = "@tolentino_cotesta";
+1. Open de Arduino IDE op je computer.
+2. Ga links bovenin naar **Sketch** > **Include Library** > **Manage Libraries**.
+3. Zoek naar **UniversalTelegramBot** en installeer deze bibliotheek.
 
-uint32_t Wheel(byte WheelPos) {
-  WheelPos = 255 - WheelPos;
-  if (WheelPos < 85) {
-    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
-  } else if (WheelPos < 170) {
-    WheelPos -= 85;
-    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
-  } else {
-    WheelPos -= 170;
-    return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
-  }
-}
+![](InstructionPictures/1.png)
 
-// Function for the rainbow cycle effect
-void rainbowCycle(uint8_t wait) {
-  for (int j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on the wheel
-    for (int i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i * 256 / strip.numPixels() + j) & 255));
-    }
-    strip.show();
-    delay(wait);
-  }
-}
+5. Zoek naar **ArduinoJson** (door Benoit Blanchon) en installeer de laatste stabiele versie.
 
-void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  strip.begin();
-  // initialize the Serial
-  Serial.begin(115200);
-  Serial.println("\nStarting TelegramBot...");
+![](InstructionPictures/2.png)
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, pass);
-  delay(500);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    delay(500);
-  }
- 
-#ifdef ESP8266
-  // Sync time with NTP, to check properly Telegram certificate
-  configTime(MYTZ, "time.google.com", "time.windows.com", "pool.ntp.org");
-  //Set certficate, session and some other base client properies
-  client.setSession(&session);
-  client.setTrustAnchors(&certificate);
-  client.setBufferSizes(1024, 1024);
-#elif defined(ESP32)
-  // Sync time with NTP
-  configTzTime(MYTZ, "time.google.com", "time.windows.com", "pool.ntp.org");
-  #if USE_CLIENTSSL == false
-    client.setCACert(telegram_cert);
-  #endif
-#endif
-  
-  // Set the Telegram bot properies
-  myBot.setUpdateTime(2000);
-  myBot.setTelegramToken(token);
+### 4. Voorbereiding van de Arduino-code
 
-  // Check if all things are ok
-  Serial.print("\nTest Telegram connection... ");
-  myBot.begin() ? Serial.println("OK") : Serial.println("NOK");
+1. Open het voorbeeld **echobot** in de UniversalTelegramBot bibliotheek. Dit vind je onder **File** > **Examples** > **UniversalTelegramBot** > **esp8266** > **echobot**.
 
-  char welcome_msg[128];
-  snprintf(welcome_msg, 128, "BOT @%s online\n/help all commands avalaible.", myBot.getBotName());
+![](InstructionPictures/3.png)
 
-  // Send a message to specific user who has started your bot
-  myBot.sendTo(userid, welcome_msg);
-}
+1. Pas de volgende waarden aan in de code:
+   - **WiFi-gegevens**: Vul je SSID (Naam van het netwerk) en wachtwoord in tussen de `""` op de lijn waar `#define WIFI_SSID` staat.
+   - **BOTtoken**: Vul het token in dat je van BotFather hebt ontvangen tussen de `""` op de lijn waar `#define BOT_TOKEN` staat.
 
-void loop() {
-  
-  static uint32_t ledTime = millis();
-  if (millis() - ledTime > 150) {
-    ledTime = millis();
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-  }
+### 5. Upload je code naar de NodeMCU
 
-  // local variable to store telegram message data
-  TBMessage msg;
+1. Sluit je NodeMCU aan op je computer via een USB-kabel.
+2. Selecteer het juiste board en poort in de Arduino IDE via **Tools** > **Board** en **Tools** > **Port**.
+3. Klik op de uploadknop om de code naar je NodeMCU te sturen.
+   
+![](InstructionPictures/4.png)
 
-  // if there is an incoming message...
-  if (myBot.getNewMessage(msg)) {    
-    // Send a message to your public channel
-    String message ;
-    message += "Message from @";
-    message += myBot.getBotName();
-    message += ":\n";
-    message += msg.text;
-    Serial.println(message);
-    myBot.sendToChannel(channel, message, true);
-    // echo the received message
-    myBot.sendMessage(msg, msg.text);
-    Serial.println("Reply send");  
-    if (message.indexOf("blue")>0) {
-      Serial.println("Input blue");
-      for (int i=0; i < NUM_LEDS; i++){
-        strip.setPixelColor(i, strip.Color(0, 0, 255));
-      }
-      strip.show();     
-    } else if (message.indexOf("red")>0) {
-      Serial.println("Input red");
-      for (int i=0; i < NUM_LEDS; i++){
-        strip.setPixelColor(i, strip.Color(255, 0, 0));
-      }
-      strip.show();
-    } else if (message.indexOf("green")>0) {
-      Serial.println("Input green");
-      for (int i=0; i < NUM_LEDS; i++){
-        strip.setPixelColor(i, strip.Color(0, 255, 0));
-      }
-      strip.show();
-    } else if (message.indexOf("on")>0) {
-      Serial.println("Input on");
-      for (int i=0; i < NUM_LEDS; i++){
-        strip.setPixelColor(i, strip.Color(255, 255, 255));
-      }
-      strip.show();
-    } else if (message.indexOf("off")>0) {
-      Serial.println("Input off");
-      strip.clear();
-      strip.show();
-    } else if (message.indexOf("rainbow")>0) {
-      Serial.println("Input rainbow");
-      rainbowCycle(1); // Adjust speed by changing the delay value
-    } else {
-      Serial.println(message);
-      Serial.println("No color was mentioned");
-    }
-  }
-}
+### 6. Open de Serial Monitor
+
+1. Open de Serial Monitor in de Arduino IDE via **Tools** > **Serial Monitor**.
+
+![](InstructionPictures/5.png)
+
+1. In de Serial Monitor's bovenste balk aan de rechter kant moet je de baudrate instellen op **115200**.
+2. Controleer of de verbinding met WiFi succesvol is. Je zou een melding moeten zien in de Serial Monitor dat de NodeMCU is verbonden.
+
+### 7. Test de bot
+
+1. Stuur een bericht naar je bot via Telegram. Typ iets en stuur het.
+2. De NodeMCU zou het bericht moeten ontvangen en als een echo terugsturen naar Telegram.
+
+### 8. Voeg functionaliteit toe
+
+1. Zoek in de code naar de loop waarin de berichten worden verwerkt. 
+   
+   Deze zou moeten staan in de functie 
+   
+   ```cpp
+   void handleNewMessages(int numNewMessages) 
+   {
+       ...
+   }
+   ```
+   
+   1.1 Voeg de volgende regel toe om het ontvangen bericht te printen:
+   
+   ```cpp
+   Serial.println(bot.messages[i].text);
+   ```
+2. Je kunt nu slimme antwoorden toevoegen. Zo kan je andere teksten terug sturen door `"Message"` in zijn geheel te vervangen met iets tussen twee aanhalingstekens zoals `"Wat wil je dat ik doe?"`:
+   
+   ```cpp
+   bot.sendMessage(bot.messages[i].chat_id, "Message", "");
+   ```
+   
+   Dit verstuurt een automatisch antwoord naar de gebruiker.
+
+### 9. Configureer de ingebouwde LED
+
+1. Voeg de volgende regel toe in de `setup()` functie:
+   
+   ```cpp
+   pinMode(LED_BUILTIN, OUTPUT); 
+   ```
+
+    Dit zorgt ervoor dat we de ingebouwde LED kunnen activeren en de-activeren
+
+### 10. Voeg basisintelligentie toe
+
+1. In dezelfde loop waar je de ontvangen berichten verwerkt, voeg een `if`-statement toe:
+   
+   ```cpp
+   void handleNewMessages(int numNewMessages) 
+   {
+       if (bot.messages[i].text == "lights on") {
+           digitalWrite(LED_BUILTIN, LOW); // Zet de LED aan
+       } else if (bot.messages[i].text == "lights off") {
+           digitalWrite(LED_BUILTIN, HIGH); // Zet de LED uit
+       }
+   }
+   ```
+
+### 11. Koppel je LED-strip
+
+1. Sluit een LED-strip aan op de NodeMCU. Zorg ervoor dat je de juiste pinnen gebruikt.
+2. Gebruik dezelfde logica als hierboven om de LED-strip aan en uit te schakelen via Telegram-commando's.
+
+## Veelvoorkomende fouten en oplossingen
+
+### Fout: Geen verbinding met WiFi
+
+- **Oorzaak**: Verkeerde SSID of wachtwoord.
+- **Oplossing**: Controleer je WiFi-gegevens in de code.
+
+### Fout: Bot reageert niet
+
+- **Oorzaak**: Verkeerd BOT-token of de bot is niet actief.
+- **Oplossing**: Controleer of je de juiste BOT-token hebt ingevoerd en dat de bot is gestart in Telegram.
+
+### Fout: Serial Monitor toont geen gegevens
+
+- **Oorzaak**: Baudrate is niet goed ingesteld.
+- **Oplossing**: Zorg ervoor dat de baudrate in de Serial Monitor is ingesteld op 115200.
+
+## Bronnen
+
+- [Telegram Bot API](https://core.telegram.org/bots/api)
+- [Arduino Universal Telegram Bot](https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot)
+- [ArduinoJson](https://arduinojson.org/)
+- [Handleiding Op DLO](https://icthva.sharepoint.com/:w:/s/FDMCI_ORG__CMD-Amsterdam/Eb7Jd27yWphMuVFbMHV_9WoBEg5_zqAQilsb6Q3gPSKueg?e=f5PM7l)
+
+Volg deze stappen zorgvuldig en je zult succesvol je NodeMCU kunnen aansturen via Telegram!
