@@ -2,19 +2,31 @@
 This guide shows you how to control lights attached to a NodeMCU through Telegram.
 
 ## Required hardware
-- Adafruit neopixel LED strip
-  - Or a different type of LED, in which case you will once again need to change some code
 - NodeMCU (or a different board with that supports wifi)
   - If u use a different board, it is possible you have to change some of the code and need to install different libaries)
-
+    ![nodemcu](https://github.com/user-attachments/assets/3315e651-f0f5-4989-92cf-d5a550946391)
+- Adafruit neopixel LED strip
+  - Or a different type of LED, in which case you will once again need to change some code
+    ![LED_strip](https://github.com/user-attachments/assets/57e94898-f768-4494-88cc-8394bb757e9f)
+- A smartphone that can set up a mobile hotspot
 
 ## Required libraries
 - Adafruit NeoPixel (and dependancies)
 - ArduinoJson (and dependancies)
 - AsyncTelegram2 (and dependancies)
+To donwload libraries, in your Arduino IDE, go to Tools > Manage libraries and search for the required libraries
+
+![Libraries](https://github.com/user-attachments/assets/7ea6ba26-a6e9-4298-9d6c-6a64bcb963ed)
 
 ## Other requirements
--Telegram account
+- Telegram account (can be created in the Telegram mobile app)
+
+## Creating the telegram bot
+1. Open the Telegram app
+2. Search for the account @BotFather
+![BotFather](https://github.com/user-attachments/assets/3096c19e-12bb-485b-8a38-8afeb0c9a6bb)
+3. Start the bot and send and send "/newbot"
+4. Give the bot a name (the name must be unique, so it may take a few tries)
 
 ## Code
 ```C
