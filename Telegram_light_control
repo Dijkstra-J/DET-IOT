@@ -1,4 +1,13 @@
-/*Based on: echoBot.ino by Tolentino Cotesta <cotestatnt@yahoo.com>*/
+/*Adapted from:
+  Name:        echoBot.ino
+  Created:     26/03/2021
+  Author:      Tolentino Cotesta <cotestatnt@yahoo.com>
+  Description: a simple example that check for incoming messages
+               and reply the sender with the received message.
+                 The message will be forwarded also in a public channel
+                 anad to a specific userid.
+*/
+
 
 /* 
   Set true if you want use external library for SSL connection instead ESP32@WiFiClientSecure 
