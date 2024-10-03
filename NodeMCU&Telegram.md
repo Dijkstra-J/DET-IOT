@@ -1,6 +1,15 @@
-# Guide for switching lights on the NodeMCU using telegram
+# Guide for managing lights on the NodeMCU using telegram
+This guide shows you how to give instruction to a NodeMCU thorugh Telegram.
+
+## Required hardware
+-NodeMCU (or a different board with that supports wifi)
+  - If u use a different board, it is possible you have to change some of the code and need to install different libaries)
+
+## Required libraries
+
+## Other requirements
 ```C
-/*
+/*Based on:
   Name:        echoBot.ino
   Created:     26/03/2021
   Author:      Tolentino Cotesta <cotestatnt@yahoo.com>
@@ -52,9 +61,9 @@ Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 AsyncTelegram2 myBot(client);
 
-const char* ssid  =  "J.D.";     // SSID WiFi network
-const char* pass  =  "planetofthekiwis";     // Password  WiFi network
-const char* token =  "7781926091:AAHZLEKHVBM5pdZdFisZEMhXw9o5obVpP6E";  // Telegram token
+const char* ssid  =  "*Insert your hotspot name here*";     // SSID WiFi network
+const char* pass  =  "*Insert your hotspot password here*";     // Password  WiFi network
+const char* token =  "*Insert the telegram token of your bot here*";  // Telegram token
 
 // Target user can find it's own userid with the bot @JsonDumpBot
 // https://t.me/JsonDumpBot
