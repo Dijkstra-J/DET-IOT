@@ -2,10 +2,11 @@
 This guide shows you how to control lights attached to a NodeMCU through Telegram.
 
 ## Required hardware
--NodeMCU (or a different board with that supports wifi)
-  - If u use a different board, it is possible you have to change some of the code and need to install different libaries)
-* Adafruit neopixel LED strip
+- Adafruit neopixel LED strip
   - Or a different type of LED, in which case you will once again need to change some code
+- NodeMCU (or a different board with that supports wifi)
+  - If u use a different board, it is possible you have to change some of the code and need to install different libaries)
+
 
 ## Required libraries
 - Adafruit NeoPixel (and dependancies)
