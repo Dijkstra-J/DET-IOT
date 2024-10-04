@@ -142,7 +142,7 @@ Then the setup, you need to do a few things here:
 - Then the time is synced, no idea how or why that works, but it seems important.
 - Then the telegram bot is setup, with a refresh time of 2 seconds
 - Then there is a Serial.println that writes whether the bot is okay, but I have noticed that the bot works when it is NOK (not okay), so the best way to test whether it is operational is to just send a message and see if you get a response
-- 
+
 ```C
 void setup() {
   strip.begin();
