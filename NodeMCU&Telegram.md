@@ -131,10 +131,20 @@ void rainbowCycle(uint8_t wait) {
   }
 }
 ```
-Then
+Then the setup, you need to do a few things here:
+- Send a begin command to the LED strip
+- Begin the serial monitor (you can open it with Ctrl + Shift + m)
+-   Notice that you have to set the serial monitor baut rate the same as the baut rate you give it in the Serial.begin command
+
+![Serial Monitor](https://github.com/user-attachments/assets/5a0904fe-cc84-420a-8796-dda4d4739391)
+
+- Then the Wifi mode is declared, which will print a number of "." until it is connected.
+- Then the time is synced, no idea how or why that works, but it seems important.
+- Then the telegram bot is setup, with a refresh time of 2 seconds
+- Then there is a Serial.println that writes whether the bot is okay, but I have noticed that the bot works when it is NOK (not okay), so the best way to test whether it is operational is to just send a message and see if you get a response
+- 
 ```C
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
   strip.begin();
   // initialize the Serial
   Serial.begin(115200);
@@ -177,15 +187,14 @@ void setup() {
   // Send a message to specific user who has started your bot
   myBot.sendTo(userid, welcome_msg);
 }
+```
+Lastly the void loop, that loops all the code that is necesary.
+- The first part is simply the echobot
+- Then for the modes red, green, blue, white, off and rainbow an if statement is written that works like this:
+-   If message contains "a color" set all the leds in the strip to that color.
 
+```C
 void loop() {
-  
-  static uint32_t ledTime = millis();
-  if (millis() - ledTime > 150) {
-    ledTime = millis();
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-  }
-
   // local variable to store telegram message data
   TBMessage msg;
 
@@ -202,6 +211,7 @@ void loop() {
     // echo the received message
     myBot.sendMessage(msg, msg.text);
     Serial.println("Reply send");  
+
     if (message.indexOf("blue")>0) {
       Serial.println("Input blue");
       for (int i=0; i < NUM_LEDS; i++){
@@ -240,3 +250,16 @@ void loop() {
   }
 }
 ```
+
+With that all the code is ready and your bot is ready to be used.
+
+## Common issues:
+
+## Sources:
+https://icthva.sharepoint.com/:w:/s/FDMCI_ORG__CMD-Amsterdam/Eb7Jd27yWphMuVFbMHV_9WoBEg5_zqAQilsb6Q3gPSKueg?e=f5PM7l
+
+https://www.arduino.cc/reference/en/language/variables/data-types/string/functions/equalsignorecase/
+
+https://forum.arduino.cc/t/test-if-a-string-contains-a-string/478927/3 
+
+https://chatgpt.com/share/66fe628d-03c0-800d-86ae-27fbf8e74537
