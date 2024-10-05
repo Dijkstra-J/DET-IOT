@@ -33,3 +33,8 @@ No big deal, so I discoverd my vison module did not have a model installed at al
 So, I donwloaded the model and followed the instructions on how to install it. Sadly (possibly a windows 11 problem), everytime I tried to install (which was many times, trust me) the module disconnected before the install could be completed.
 
 So then there were some more suggestions including resetting the dvice to factorysettings and all, but since it is not mine, I did not really want to do that. And I had to download some shady software as well, which I also didn't really feel like doing.
+
+And I searched the internet for stuff as indicated in this image:
+
+![tabs](https://github.com/user-attachments/assets/11bafb38-546b-4aac-9cb3-37b48e5b8400)
+
