@@ -20,6 +20,8 @@ https://docs.arduino.cc/tutorials/nano-33-ble-sense-rev2/proximity-sensor/
 https://forum.arduino.cc/t/esp32-bluetooth-proximity-sensor/1025299
 
 Actual manual starts here:
+
+
 #Arduino controled spotify
 This manual will show you how to set up an arduino program that can control spotify. At first through button, second through bluetooth proximity.
 
