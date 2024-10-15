@@ -59,37 +59,56 @@ This project is a proof of concept for the concpet described in this document (o
 ## Part 1, button
 For anything to work we need a spotify API, you can create it at https://developer.spotify.com/
 For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. To donwload it, select the green "code" button and select "download ZIP". Then in your Arduino IDE go to sketch > include library > add .zip library and add the downloaded file.
+
 Once the Output window says "Library installed" restart your Arduino IDE and open the spotifyarduino example "getRefreshToken". You will need this token later.
 In the corresponding places in the file add your spotify developer Client ID & Client Secret. And also add in the corresponding places your hotspot name and password.
+
 The provided code then is a bit unclear but you have to do the following:
+
 1. In the serial monitor find the IP address
 2. Go to your spotify API settings and add "http://[IP address (the one from the serial monitor)]/callback/" as a redirect URI (and save your changes)
 3. Then on the device that is the hotspot go to a webbrowser and search for "http://[IP address (the one form the Serial monitor)]
 4. You should get to a blank page with a spotify authentication link, click the link and authenticate. This should redirect you to the callback page on which the refresh token is shown.
 
 Then go back tot the player controls example and add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the market spot)).
+
 Here I ran into a little issue, where it would not be able to send the request. Printing failed to send request on everything.
+
 This appeared to be because of a combination of me being poor (not having spotify premium) and spotify being not a nice company and locking almost all the API stuff behind premium.
+
 So I switchted to a part of the API that doesn't require premium, which is the getCurrentlyPlaying example.
+
 In this example add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and the correct country code (in the market spot)).
+
 Which did work (correcly even), mark me relieved.
+
 So that makes a change of plans. Instead of pausing and resuming, the code will now request the currently playing song on button pressed. A bit of a shame, but it will serve as the proof of concept. 
+
 If you do have spotify premium, all other functions should be available to you as well. And can (probalby) be implemented in a similar way.
 
 ### Start creating own code (finally)
 If you have a 3 pin button it should be wired like this:
-On the button bourd you should see an S a - and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground.
+On the button bourd you should see an S a - and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.
+
 Currently the code requests the currently playing content every minute. I will change this into a request on button press.
+
 I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.
-I define a button pin after the Spotify_refersh token 
-```C #define BUTTON_PIN 15``` In my case it is pin (D)15
-Then at the end of the void setup I add
-```C pinMode(BUTTON_PIN, INPUT_PULLUP);```
-Then at the start of the void loop I add ```C int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```C if (millis() > requestDueTime)``` with ```C if (buttonState == LOW)``` (Not LOW, I did that first and then it jsut constantly goes of).
-At the end of the void loop I replace the ```C requestDueTime = millis() + delayBetweenRequests; ``` with ```C delay(150);``` to prevent bounce.
-The ```C unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)
-unsigned long requestDueTime;               //time when request due``` can also be removed, but you can also leave them. So I just comment out them.
-Somewhere in the void loop I also added a ```C Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
+
+I define a button pin after the Spotify_refersh token
+```#define BUTTON_PIN 15``` 
+In my case it is pin (D)15
+
+Then at the end of the void setup I add 
+``` pinMode(BUTTON_PIN, INPUT_PULLUP);```
+Then at the start of the void loop I add ```int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```if (millis() > requestDueTime)``` with ```if (buttonState == High)``` 
+
+At the end of the void loop I replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce.
+
+The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)
+unsigned long requestDueTime;               //time when request due```
+can also be removed, but you can also leave them. So I just comment out them.
+
+Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
 With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file.
 
 ### Code for part 1
