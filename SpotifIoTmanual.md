@@ -135,7 +135,7 @@ When I finally got that to work I noticed all the adresses used lower case lette
 Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable. This also did not work, but I tried to do it with one of the devices I found in the list. I chose the one with the highest RSSI (which I assumed would be the closest). This way I could at least check whether the rest of the code was functional. This worked but, the returned distance was around 23 meters which means it was probably the most far away object. With this knowledge now I checked the address with the lowest RSSI value. This time the value returned was 8 meters. Which confirmed my new idea that lower RSSI values mean lower distances.
 
 I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.
-So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file).
+So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.
 
 ### Part 3 Combining part 1 and 2
 For the final part I take the first two parts and combine them into one piece of code.
@@ -144,7 +144,10 @@ The code is mainly build up from the code of part one with the essential parts o
 ``` if (device.getRSSI() < 75){ ```
 
 Whith in that statment the existing code for finding the currently playing song.
+While copying code do not forget this part ``` BLEScan* pBLEScan; ```. It should go after the libary calls and before the void setup
+
 The code for the button press also still remains to keep the system operational without bluetooth.
+
 
 ### Code for part 1
 ```C
