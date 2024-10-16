@@ -38,23 +38,14 @@ This project is a proof of concept for the concpet described in this document (o
 
 ## Software requirements
 - Arduino IDE
-- A Python IDE
--   I use Visual Studio Code in an Anaconda environment
 
 ## Library requirements Arduino
 - SpotifyArduino https://github.com/witnessmenow/spotify-api-arduino
 - ArduinoJson
 
-## Library requirements Python
-- SwSpotify https://pypi.org/project/swspotify/
-- pySerial https://pyserial.readthedocs.io/en/latest/index.html
-- PyAutoGui https://www.hackster.io/akshithk/arduino-controlled-spotify-7fa4b0
-
-## Extensions
-- Arduino extension for Visual Studio code https://github.com/vscode-arduino/vscode-arduino
-
 ## API requirements
 - Spotify API
+- 	The options are very limited for a spotify free account, to be able to do anything meaningfull you need a spotify premium subscription. That being said, this manual was written using a spotify free account.
 
 ## Part 1, button
 For anything to work we need a spotify API, you can create it at https://developer.spotify.com/
@@ -110,6 +101,36 @@ can also be removed, but you can also leave them. So I just comment out them.
 
 Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
 With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file.
+
+### Part 2 Bluetooth connection
+The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.
+To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.
+This did not get the device I wanted, but did get a few other devices and some data I like to see, which includes something that could be distance.
+The examples didn't get me any further, so I went to google. Which also didn't really help me, but did indicate it is kinda possible, just not too accurate.
+But nothing about functional code still, which led me to chatGPT. [https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e]. Which resulted in the following error: Compilation error: 'init' is not a member of 'BLEDevice'. So a little google searching and screwing around later I figured out it might be a library I don't need causing the issue, so after removing that I got a little furhter.
+But ran into this error Compilation error: conversion from 'BLEScanResults*' to non-scalar type 'BLEScanResults' requested.
+It that a "pointer" (whatever that is) is assigned to a non "pointer" object. It appears that the code GPT gave me was incorrect. It included pBLEScan->start(5), where start() is not an existing function in the library. So I changed it into a lot of different variations, but nothing worked.
+That made it time to go reading the library. Which did not at all improve my understanding of the code, so it was time to open the scan example.
+That resulted into me discovering BLEScanResults foundDevices = pBLEScan->start(5); should have been BLEScanResults *foundDevices = pBLEScan->start(5, false);. Mildly annoyed.
+Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.
+
+In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff.
+
+The code started printing like this:
+14:44:09.931 -> _string: construction from null is not valid
+14:44:18.098 -> ring: construction from null is not valid
+14:44:26.247 -> basic_string: construction from null is not valid
+14:44:34.399 -> <Unknown>
+14:44:42.574 -> 
+14:44:50.741 ->  construction from null is not valid
+14:44:58.861 -> ng: construction from null is not valid
+Which I assumed to mean there were no results.
+
+Adding some println statemenst I discovered that the functions used to call the device information were always empty.
+Adding some delays behind those statements gave me the RSSI's (used for getting the distance), but not the data I need to get it from a specific device.
+Very sometimes a name popped up, but mostly it was empty even with a bigger delay.
+So I switched to trying to get the addresses from the devices.
+When I finally got that to work I noticed all the adresses used lower case letters and not upper case letters, as I had seen when I read the mac-address from my phone. So I changed the case of the letters in my mac-adress to search.
 
 ### Code for part 1
 ```C
