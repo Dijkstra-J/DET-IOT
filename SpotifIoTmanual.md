@@ -147,7 +147,7 @@ Whith in that statment the existing code for finding the currently playing song.
 While copying code do not forget this part ``` BLEScan* pBLEScan; ```. It should go after the libary calls and before the void setup
 
 The code for the button press also still remains to keep the system operational without bluetooth.
-
+It is possible that the code gets stuck in the compiling phase, just give it time, the code is either quite big or very poorly optimised.
 
 ### Code for part 1
 ```C
