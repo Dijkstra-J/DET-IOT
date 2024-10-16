@@ -148,6 +148,11 @@ While copying code do not forget this part ``` BLEScan* pBLEScan; ```. It should
 
 The code for the button press also still remains to keep the system operational without bluetooth.
 It is possible that the code gets stuck in the compiling phase, just give it time, the code is either quite big or very poorly optimised.
+The previous line immediately came back to bite me. The program was too long and didn't fit on my board. Which meant I had to reduce the length by about 40%.
+The simplest solution I tried was to remove a load of comments. Which not too surprisingly did nothing at all.
+So I removed all the code required for the button. I didn't really want to do this, but I had to to make it work.
+This removed only 1 percent of the overshot length. So I removed some libraries I simply hoped I did not need.
+This was still not enough, so I went to chatGPT to shorten it even further.
 
 ### Code for part 1
 ```C
