@@ -132,6 +132,8 @@ Very sometimes a name popped up, but mostly it was empty even with a bigger dela
 So I switched to trying to get the addresses from the devices.
 When I finally got that to work I noticed all the adresses used lower case letters and not upper case letters, as I had seen when I read the mac-address from my phone. So I changed the case of the letters in my mac-adress to search.
 
+Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable.
+
 ### Code for part 1
 ```C
 /*******************************************************************
@@ -197,13 +199,13 @@ When I finally got that to work I noticed all the adresses used lower case lette
 char ssid[] = "J.D.";         // your network SSID (name)
 char password[] = "planetofthekiwis"; // your network password
 
-char clientId[] = "67e0980fa03941609c24ae7126b30ae5";     // Your client ID of your spotify APP
-char clientSecret[] = "ff9d5521a0974487a99cddad31f6f8f5"; // Your client Secret of your spotify APP (Do Not share this!)
+char clientId[] = "your client id here";     // Your client ID of your spotify APP
+char clientSecret[] = "Your client secret here"; // Your client Secret of your spotify APP (Do Not share this!)
 
 // Country code, including this is advisable
 #define SPOTIFY_MARKET "NL"
 
-#define SPOTIFY_REFRESH_TOKEN "AQAp1IMnhLdwbRwIV_f2i5XTqG8oyatSUPESyZtdYwv21k2AGSwlXH4HaieJTFYgTp3ObhlKxXHWYlJ5XOTlE5oGvYFv9mJWEEOVfjitaA4ZnPIyvjQJ2ltr6RBcziV3988"
+#define SPOTIFY_REFRESH_TOKEN "Your refersh token here"
 
 #define BUTTON_PIN 15
 
