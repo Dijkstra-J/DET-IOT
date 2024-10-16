@@ -29,8 +29,8 @@ This project is a proof of concept for the concpet described in this document (o
 
 ## Hardware requirements for the first part
 - ESP 32 (or a different board that supports bluetooth and or wifi).
--   The first part can also be done without bluetooth support.
--   The manual is written using a NodeMCU-ESP32, but it could also be possible with a different board.
+	- The first part can also be done without bluetooth support.
+	- The manual is written using a NodeMCU-ESP32, but it could also be possible with a different board.
 
 ## Extra hardware requirements for the second part
 - A device that can set up a hotspot (mobile phone works better than pc most of the time).
@@ -45,7 +45,7 @@ This project is a proof of concept for the concpet described in this document (o
 
 ## API requirements
 - Spotify API
-- 	The options are very limited for a spotify free account, to be able to do anything meaningfull you need a spotify premium subscription. That being said, this manual was written using a spotify free account.
+	- The options are very limited for a spotify free account, to be able to do anything meaningfull you need a spotify premium subscription. That being said, this manual was written using a spotify free account.
 
 ## Part 1, button
 For anything to work we need a spotify API, you can create it at https://developer.spotify.com/
