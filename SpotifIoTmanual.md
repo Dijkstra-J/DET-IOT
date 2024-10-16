@@ -100,7 +100,7 @@ unsigned long requestDueTime;               //time when request due```
 can also be removed, but you can also leave them. So I just comment out them.
 
 Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
-With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file.
+With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file).
 
 ### Part 2 Bluetooth connection
 The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.
@@ -132,7 +132,19 @@ Very sometimes a name popped up, but mostly it was empty even with a bigger dela
 So I switched to trying to get the addresses from the devices.
 When I finally got that to work I noticed all the adresses used lower case letters and not upper case letters, as I had seen when I read the mac-address from my phone. So I changed the case of the letters in my mac-adress to search.
 
-Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable.
+Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable. This also did not work, but I tried to do it with one of the devices I found in the list. I chose the one with the highest RSSI (which I assumed would be the closest). This way I could at least check whether the rest of the code was functional. This worked but, the returned distance was around 23 meters which means it was probably the most far away object. With this knowledge now I checked the address with the lowest RSSI value. This time the value returned was 8 meters. Which confirmed my new idea that lower RSSI values mean lower distances.
+
+I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.
+So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file).
+
+### Part 3 Combining part 1 and 2
+For the final part I take the first two parts and combine them into one piece of code.
+The code is mainly build up from the code of part one with the essential parts of part 2. In the loop a second if statement is added that looks like this:
+
+``` if (device.getRSSI() < 75){ ```
+
+Whith in that statment the existing code for finding the currently playing song.
+The code for the button press also still remains to keep the system operational without bluetooth.
 
 ### Code for part 1
 ```C
@@ -375,4 +387,73 @@ void loop()
         delay(150);
     }
 }
+```
+
+### Code for part 2
+```C
+#include <BLEDevice.h>
+#include <BLEScan.h>
+#include <BLEAdvertisedDevice.h>
+
+BLEScan* pBLEScan;
+
+void setup() {
+  Serial.begin(115200);
+  while(!Serial);
+  BLEDevice::init("");  // Initialize BLE
+  pBLEScan = BLEDevice::getScan();  // Create a BLE scanner object
+  pBLEScan->setActiveScan(true);    // Set scanning mode to active (faster)
+}
+
+void loop() {
+  BLEScanResults *foundDevices = pBLEScan->start(10, false);  // Scan for 5 seconds
+  int deviceCount = foundDevices->getCount();         // Get the number of found devices
+  Serial.print("Scan done, devices found: ");
+  Serial.println(deviceCount);
+  delay(500);
+  Serial.println("Start searching for specified device");
+  for (int i = 0; i < deviceCount; i++) {
+    BLEAdvertisedDevice device = foundDevices->getDevice(i);
+    Serial.println(device.getAddress().toString());
+    Serial.println(device.getName());
+    Serial.println(device.getRSSI());
+
+    // Check if this is the target Bluetooth device (match by address or name)
+    if (device.getAddress().toString() == "XX:XX:XX:XX:XX:XX") { // Replace with your target device's address
+      int rssi = device.getRSSI(); // Get RSSI value
+      Serial.print("Device found: ");
+      Serial.println(device.getAddress().toString().c_str());
+      Serial.print("RSSI: ");
+      Serial.println(rssi);
+
+      // Optionally, calculate approximate distance (based on RSSI)
+      float distance = calculateDistance(rssi);
+      Serial.print("Estimated Distance: ");
+      Serial.print(distance);
+      Serial.println(" meters");
+    }
+  }
+  pBLEScan->clearResults();  // Clear scan results
+  delay(3000);  // Wait before the next scan
+}
+
+float calculateDistance(int rssi) {
+  int txPower = -59;  // Typical RSSI value at 1 meter distance
+  if (rssi == 0) {
+    return -1.0; // if we cannot determine distance (signal strength is 0)
+  }
+
+  float ratio = rssi * 1.0 / txPower;
+  if (ratio < 1.0) {
+    return pow(ratio, 10);
+  } else {
+    float distance = (0.89976) * pow(ratio, 7.7095) + 0.111;
+    return distance;
+  }
+}
+```
+
+### Code for part 3 (Final code)
+```C
+
 ```
