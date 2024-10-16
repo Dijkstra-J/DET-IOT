@@ -196,8 +196,8 @@ Then I tried to turn off the random mac address, that increases privacy, but mig
 
 //------- Replace the following! ------
 
-char ssid[] = "J.D.";         // your network SSID (name)
-char password[] = "planetofthekiwis"; // your network password
+char ssid[] = "your hotspot name here";         // your network SSID (name)
+char password[] = "your wifi password here"; // your network password
 
 char clientId[] = "your client id here";     // Your client ID of your spotify APP
 char clientSecret[] = "Your client secret here"; // Your client Secret of your spotify APP (Do Not share this!)
