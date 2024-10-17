@@ -159,6 +159,10 @@ Some more testing resulted in the following knowledge: The bluetooth program tak
 ### Part 3.75 new solution
 Since the complex way doesn't work I recieved a more simple way to achieve this, using I2C. It still uses two boards, but this time they are connected with wires instead of internet.
 The first test resulted in the message constantly being -1 or 117, but the sender did send 1 or 0. It also appears that the code I had for the spotify API no longer works. 
+After adding some extra code that setup the original variable, the standard value was 0, but didn't change ever.
+After a little more tweaking, that was mostly necesary because I didn't read the documentation correctly.
+It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
+
 
 
 ### Code for part 1
