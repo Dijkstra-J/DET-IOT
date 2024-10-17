@@ -136,6 +136,10 @@ So I removed all the code required for the button. I didn't really want to do th
 This removed only 1 percent of the overshot length. So I removed some libraries I simply hoped I did not need.
 This was still not enough, so I went to chatGPT to shorten it even further. Which also achieved nothing at all.
 
+At this point I don't have any more practical ideas left, but luckely I do also have a ESP8266.
+So the new plan is to use a ESP32 for the bluetooth part, the ESP8266 for the spotify part and then send data between them.
+
+
 ### Code for part 1
 ```C
 /*******************************************************************
