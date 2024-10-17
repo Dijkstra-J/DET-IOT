@@ -5,8 +5,14 @@ This project is a proof of concept for the concpet described in this document (o
 
 ## Hardware requirements for the first part
 - ESP 32 (or a different board that supports bluetooth and or wifi).
-	- The first part can also be done without bluetooth support.
+  	- The first part can also be done without bluetooth support.
 	- The manual is written using a NodeMCU-ESP32, but it could also be possible with a different board.
+<img src="https://github.com/user-attachments/assets/0204c9f2-17ef-44d7-a0f6-832d4507cd95" alt="ESP32" width=400/>
+
+
+- Button
+	- I use a 4 pin button on a 3 pin connector. So if you use a different button some code may have to be changed.
+<img src="https://github.com/user-attachments/assets/4a51a36c-0e47-4846-a971-fc0f08795209" alt="Button" width=400/>
 
 ## Extra hardware requirements for the second part
 - A device that can set up a hotspot (mobile phone works better than pc most of the time).
@@ -128,7 +134,7 @@ The previous line immediately came back to bite me. The program was too long and
 The simplest solution I tried was to remove a load of comments. Which not too surprisingly did nothing at all.
 So I removed all the code required for the button. I didn't really want to do this, but I had to to make it work.
 This removed only 1 percent of the overshot length. So I removed some libraries I simply hoped I did not need.
-This was still not enough, so I went to chatGPT to shorten it even further.  
+This was still not enough, so I went to chatGPT to shorten it even further. Which also achieved nothing at all.
 
 ### Code for part 1
 ```C
