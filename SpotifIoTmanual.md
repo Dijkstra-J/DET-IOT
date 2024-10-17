@@ -9,10 +9,12 @@ This project is a proof of concept for the concpet described in this document (o
 	- The manual is written using a NodeMCU-ESP32, but it could also be possible with a different board.
 <img src="https://github.com/user-attachments/assets/0204c9f2-17ef-44d7-a0f6-832d4507cd95" alt="ESP32" width=400/>
 
-
 - Button
 	- I use a 4 pin button on a 3 pin connector. So if you use a different button some code may have to be changed.
 <img src="https://github.com/user-attachments/assets/4a51a36c-0e47-4846-a971-fc0f08795209" alt="Button" width=400/>
+
+- ESP8266
+
 
 ## Extra hardware requirements for the second part
 - A device that can set up a hotspot (mobile phone works better than pc most of the time).
@@ -24,6 +26,7 @@ This project is a proof of concept for the concpet described in this document (o
 ## Library requirements Arduino
 - SpotifyArduino https://github.com/witnessmenow/spotify-api-arduino
 - ArduinoJson
+- Adafruit IO Arduino
 
 ## API requirements
 - Spotify API
@@ -138,6 +141,13 @@ This was still not enough, so I went to chatGPT to shorten it even further. Whic
 
 At this point I don't have any more practical ideas left, but luckely I do also have a ESP8266.
 So the new plan is to use a ESP32 for the bluetooth part, the ESP8266 for the spotify part and then send data between them.
+
+### Part 3.5 spread the program across 2 arduino boards
+For this part you need to create a new feed in the Adafruit IO.
+
+For the basis I use the example from Adafruit IO arduino > AdafruitIO20_shared_feed_write. This is the sending partion, so it gets combined with the bluetooth part of the code. To that I add the necesary code from the bluetooth code and I write this to the ESP32.
+
+For the the next part I use the Adafruitio_21_feed_read, to recieve the signal. To this I add the required code for the spotify part and send it to the ESP8266
 
 
 ### Code for part 1
