@@ -65,6 +65,9 @@ If you do have spotify premium, all other functions should be available to you a
 ### Start creating own code (finally)
 If you have a 3 pin button it should be wired like this:
 On the button bourd you should see an S a - and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.
+<img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=400/>
+<img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=400/>
+<img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=400/>
 
 Currently the code requests the currently playing content every minute. I will change this into a request on button press.
 
