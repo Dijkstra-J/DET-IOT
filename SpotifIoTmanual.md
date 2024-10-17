@@ -156,6 +156,10 @@ While trying to send the stuff to the boards I noticed something strange. The co
 
 Some more testing resulted in the following knowledge: The bluetooth program takes 86% of the available memory and the sharing code by deafult takes 77% memory. While I was figuring this out, I decide to also check what the code of part 1 required, which was also 77 percent. The combination is therefore quite hard to get to work.
 
+### Part 3.75 new solution
+Since the complex way doesn't work I recieved a more simple way to achieve this, using I2C. It still uses two boards, but this time they are connected with wires instead of internet.
+The first test resulted in the message constantly being -1 or 117, but the sender did send 1 or 0. It also appears that the code I had for the spotify API no longer works. 
+
 
 ### Code for part 1
 ```C
