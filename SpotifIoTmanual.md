@@ -147,7 +147,9 @@ For this part you need to create a new feed in the Adafruit IO.
 
 For the basis I use the example from Adafruit IO arduino > AdafruitIO20_shared_feed_write. This is the sending partion, so it gets combined with the bluetooth part of the code. To that I add the necesary code from the bluetooth code and I write this to the ESP32.
 
-For the the next part I use the Adafruitio_21_feed_read, to recieve the signal. To this I add the required code for the spotify part and send it to the ESP8266
+For the the next part I use the Adafruitio_21_feed_read, to recieve the signal. To this I add the required code for the spotify part and send it to the ESP8266.
+
+While trying to send the stuff to the boards I noticed something strange. The code for the write (with the bluetooth) still was too big by excatly the same size. So i resorted bakc to the original bluetooth code in part two and checked and it was not too big. So I reversed the approach and put the code for sending data into the bluetooth document. At this point I also noticed that the config file should also be filled out manually.
 
 
 ### Code for part 1
