@@ -162,6 +162,7 @@ The first test resulted in the message constantly being -1 or 117, but the sende
 After adding some extra code that setup the original variable, the standard value was 0, but didn't change ever.
 After a little more tweaking, that was mostly necesary because I didn't read the documentation correctly.
 It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
+Sadly in terms of I2C no progress was made for a while, despite quite a few tweaks.
 
 
 
