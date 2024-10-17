@@ -3,10 +3,10 @@ This manual will show you how to set up an arduino program that can control spot
 
 This project is a proof of concept for a concept as designed in a university course about IoT.
 
-At least this was the plan. Because of a number of setbacks. This has only partially been achieved. This project is devided into three parts. Part one is about getting information about the currently playing song ons spotify by pressing a button. Part two is about finding nearby bluetooth devices. Part three was supposed to be a combination of the two but this has not been achieved.
+At least that was the plan. Because of a number of setbacks. This has only partially been achieved. This project is devided into three parts. Part one is about getting information about the currently playing song ons spotify by pressing a button. Part two is about finding nearby bluetooth devices. Part three was supposed to be a combination of the two but this has not been achieved.
 If you do not want to follow steps, all the functional code can be found at the bottom of this page.
 
-## Hardware requirements for the first part
+## Hardware requirements
 - ESP 32 (or a different board that supports bluetooth and or wifi).
   	- The first part can also be done without bluetooth support.
 	- The manual is written using a NodeMCU-ESP32, but it could also be possible with a different board.
@@ -50,42 +50,42 @@ The provided expelnation from that point is a bit unclear but you have to do the
 
 With this information start the example playerControls from the spotify-api-arduino (only works if you have spotify premium, if you don't have that go to the next section). And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market). From this point you are on your own for this subject, because I was unable to test it. (Good luck (: )
 
-If you can see in your serial monitor that all the requests fail, it is probalby because you do not have acces to spotify premium. While creating this manual I made these notes about that:
+If you can see in your serial monitor that all the requests fail, it is probalby because you do not have acces to spotify premium. 
+<!--While creating this manual I made these notes about that:
 Here I ran into a little issue, where it would not be able to send the request. Printing failed to send request on everything.
 This appeared to be because of a combination of me being poor (not having spotify premium) and spotify being not a nice company and locking almost all the API stuff behind premium.
 So I switchted to a part of the API that doesn't require premium, which is the getCurrentlyPlaying example.
 In this example add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and the correct country code (in the market spot)).
 Which did work (correcly even), mark me relieved.
 So that makes a change of plans. Instead of pausing and resuming, the code will now request the currently playing song on button pressed. A bit of a shame, but it will serve as the proof of concept. 
-If you do have spotify premium, all other functions should be available to you as well. And can (probalby) be implemented in a similar way.
+If you do have spotify premium, all other functions should be available to you as well. And can (probalby) be implemented in a similar way-->
 
 If you do not have spotify premium and still want to do something with the API you can only request information about the currently playing song. For that open the example getCurrentlyPlaying from the spotify-api-arduino. And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market).
 
 ### Connecting the button
 If you have a 3 pin button it should be wired like this:
-On the button bourd you should see an S a - and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.
-<img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=400/>
-<img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=400/>
-<img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=400/>
+On the button bourd you should see an "S", a "-" and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.  
+<img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=300/>
+<img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=300/>
+<img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=300/>
 
 ### Start creating own code
+Most of the time code is replaced, you can also choose to comment out the existing code and add the new code below.
 Currently the code requests the currently playing content every minute. I will change this into a request on button press.
-
-I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.
-
-I define a button pin after the Spotify_refersh token
-```#define BUTTON_PIN 15``` 
+<!--I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.-->
+Define a button pin after the Spotify_refersh token:
+```#define BUTTON_PIN 15```. 
 In my case it is pin (D)15
 
-Then at the end of the void setup I add 
-``` pinMode(BUTTON_PIN, INPUT_PULLUP);```
-Then at the start of the void loop I add ```int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```if (millis() > requestDueTime)``` with ```if (buttonState == High)``` 
+Then at the end of the void setup add:
+``` pinMode(BUTTON_PIN, INPUT_PULLUP);```  
+Then at the start of the void loop add ```int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```if (millis() > requestDueTime)``` with ```if (buttonState == High)``` 
 
-At the end of the void loop I replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce.
+At the end of the void loop replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce.
 
-The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)
+The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)  
 unsigned long requestDueTime; //time when request due```
-can also be removed, but you can also leave them. So I just comment out them.
+can also be removed.
 
 Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
 With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file).
