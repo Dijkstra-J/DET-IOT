@@ -163,7 +163,7 @@ After adding some extra code that setup the original variable, the standard valu
 After a little more tweaking, that was mostly necesary because I didn't read the documentation correctly.
 It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
 Sadly in terms of I2C no progress was made for a while, despite quite a few tweaks.
-
+After hours of tweaking I decided to test the most basic form (https://docs.arduino.cc/learn/communication/wire/) and discovered that didn't work. So I first started trying to get that to function.
 
 
 ### Code for part 1
