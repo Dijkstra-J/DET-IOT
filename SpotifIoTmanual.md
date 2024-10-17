@@ -75,20 +75,21 @@ Currently the code requests the currently playing content every minute. I will c
 <!--I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.-->
 Define a button pin after the Spotify_refersh token:
 ```#define BUTTON_PIN 15```. 
-In my case it is pin (D)15
+In my case it is pin (D)15.  
 
 Then at the end of the void setup add:
 ``` pinMode(BUTTON_PIN, INPUT_PULLUP);```  
-Then at the start of the void loop add ```int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```if (millis() > requestDueTime)``` with ```if (buttonState == High)``` 
+Then at the start of the void loop add ```int buttonState = digitalRead(BUTTON_PIN); ``` and replace the ```if (millis() > requestDueTime)``` with ```if (buttonState == High)```.   
 
-At the end of the void loop replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce.
+At the end of the void loop replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce (triggering the code multiple times with one button press).  
 
-The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)  
-unsigned long requestDueTime; //time when request due```
-can also be removed.
+The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)``` and ```unsigned long requestDueTime; //time when request due``` can also be removed.
 
-Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
-With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file).
+Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it! 
+<!--Or you will forget and regret ever putting it in.-->
+With that you the first part of the code and the first proof of concept is done.  
+
+(Full code can be found a the bottom of this file).
 
 ## Part 2 Bluetooth connection
 The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.  
