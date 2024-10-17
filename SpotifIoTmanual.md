@@ -1,7 +1,9 @@
 # Arduino controled spotify (kinda)
 This manual will show you how to set up an arduino program that can control spotify. At first through button, second through bluetooth proximity.
 
-This project is a proof of concept for the concpet described in this document (only in dutch).
+This project is a proof of concept for a concept as designed in a university course about IoT.
+
+At least this was the plan. Because of a number of setbacks. This has only partially been achieved. This project is devided into three parts. Part one is about getting information about the currently playing song ons spotify by pressing a button. Part two is about finding nearby bluetooth devices. Part three was supposed to be a combination of the two but this has not been achieved.
 
 ## Hardware requirements for the first part
 - ESP 32 (or a different board that supports bluetooth and or wifi).
@@ -12,8 +14,6 @@ This project is a proof of concept for the concpet described in this document (o
 - Button
 	- I use a 4 pin button on a 3 pin connector. So if you use a different button some code may have to be changed.
 <img src="https://github.com/user-attachments/assets/4a51a36c-0e47-4846-a971-fc0f08795209" alt="Button" width=400/>
-
-- ESP8266
 
 
 ## Extra hardware requirements for the second part
@@ -26,7 +26,6 @@ This project is a proof of concept for the concpet described in this document (o
 ## Library requirements Arduino
 - SpotifyArduino https://github.com/witnessmenow/spotify-api-arduino
 - ArduinoJson
-- Adafruit IO Arduino
 
 ## API requirements
 - Spotify API
@@ -34,7 +33,9 @@ This project is a proof of concept for the concpet described in this document (o
 
 ## Part 1, button
 For anything to work we need a spotify API, you can create it at https://developer.spotify.com/.  
-For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. To donwload it, select the green "code" button and select "download ZIP". Then in your Arduino IDE go to sketch > include library > add .zip library and add the downloaded file.
+Here you create an app. Which you have to give a name, description and a redirect URI. For now the redirect URI can be whatever you want, I used this page when I made it. It will be changed later.  
+In terms of API/SDK's you need for this project it is only the WebAPI.  
+For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. 
 
 Once the Output window says "Library installed" restart your Arduino IDE and open the spotifyarduino example "getRefreshToken". You will need this token later.
 In the corresponding places in the file add your spotify developer Client ID & Client Secret. And also add in the corresponding places your hotspot name and password.
@@ -164,7 +165,7 @@ After a little more tweaking, that was mostly necesary because I didn't read the
 It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
 Sadly in terms of I2C no progress was made for a while, despite quite a few tweaks.
 After hours of tweaking I decided to test the most basic form (https://docs.arduino.cc/learn/communication/wire/) and discovered that didn't work. So I first started trying to get that to function.
-I didn't get that to work, so I switched which board did which and nothing changed. At this point I gave up.
+I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT wheter it could do anything for me, but it didn't result in anything functional. At this point I gave up.
 
 
 ### Code for part 1
@@ -476,5 +477,5 @@ float calculateDistance(int rssi) {
 
 ### Code for part 3 (Final code)
 ```C
-
+Incorrect, therefore not uploaded
 ```
