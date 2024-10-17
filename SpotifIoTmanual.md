@@ -1,28 +1,4 @@
-Since I need to make something connected to the internet
-
-I will see if I can get the arduino to control my spotify. For starters I wil see if I can make it pause and play with a button.
-
-It would also be funny if I could visuallise the audio on an LED strip, not really related, just funny
-
-If I get far enough, I will try to make it play and pause with a proximity sensor (if possible)
-
-
-Sources that make me think some of this is even remotely possible:
-
-https://www.hackster.io/akshithk/arduino-controlled-spotify-7fa4b0
-
-https://github.com/witnessmenow/spotify-api-arduino
-
-https://projecthub.arduino.cc/shajeeb/32-band-audio-spectrum-visualizer-analyzer-924af5
-
-https://docs.arduino.cc/tutorials/nano-33-ble-sense-rev2/proximity-sensor/
-
-https://forum.arduino.cc/t/esp32-bluetooth-proximity-sensor/1025299
-
-Actual manual starts here:
-
-
-# Arduino controled spotify
+# Arduino controled spotify (kinda)
 This manual will show you how to set up an arduino program that can control spotify. At first through button, second through bluetooth proximity.
 
 This project is a proof of concept for the concpet described in this document (only in dutch).
@@ -48,7 +24,7 @@ This project is a proof of concept for the concpet described in this document (o
 	- The options are very limited for a spotify free account, to be able to do anything meaningfull you need a spotify premium subscription. That being said, this manual was written using a spotify free account.
 
 ## Part 1, button
-For anything to work we need a spotify API, you can create it at https://developer.spotify.com/
+For anything to work we need a spotify API, you can create it at https://developer.spotify.com/.  
 For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. To donwload it, select the green "code" button and select "download ZIP". Then in your Arduino IDE go to sketch > include library > add .zip library and add the downloaded file.
 
 Once the Output window says "Library installed" restart your Arduino IDE and open the spotifyarduino example "getRefreshToken". You will need this token later.
@@ -96,23 +72,23 @@ Then at the start of the void loop I add ```int buttonState = digitalRead(BUTTON
 At the end of the void loop I replace the ```requestDueTime = millis() + delayBetweenRequests; ``` with ```delay(150);``` to prevent bounce.
 
 The ```unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)
-unsigned long requestDueTime;               //time when request due```
+unsigned long requestDueTime; //time when request due```
 can also be removed, but you can also leave them. So I just comment out them.
 
 Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
 With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file).
 
 ### Part 2 Bluetooth connection
-The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.
-To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.
-This did not get the device I wanted, but did get a few other devices and some data I like to see, which includes something that could be distance.
-The examples didn't get me any further, so I went to google. Which also didn't really help me, but did indicate it is kinda possible, just not too accurate.
-But nothing about functional code still, which led me to chatGPT. [https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e]. Which resulted in the following error: Compilation error: 'init' is not a member of 'BLEDevice'. So a little google searching and screwing around later I figured out it might be a library I don't need causing the issue, so after removing that I got a little furhter.
+The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.  
+To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.  
+This did not get the device I wanted, but did get a few other devices and some data I like to see, which includes something that could be distance.  
+The examples didn't get me any further, so I went to google. Which also didn't really help me, but did indicate it is kinda possible, just not too accurate.  
+But nothing about functional code still, which led me to chatGPT. [https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e]. Which resulted in the following error: Compilation error: 'init' is not a member of 'BLEDevice'. So a little google searching and screwing around later I figured out it might be a library I don't need causing the issue, so after removing that I got a little furhter.  
 But ran into this error Compilation error: conversion from 'BLEScanResults*' to non-scalar type 'BLEScanResults' requested.
-It that a "pointer" (whatever that is) is assigned to a non "pointer" object. It appears that the code GPT gave me was incorrect. It included pBLEScan->start(5), where start() is not an existing function in the library. So I changed it into a lot of different variations, but nothing worked.
-That made it time to go reading the library. Which did not at all improve my understanding of the code, so it was time to open the scan example.
-That resulted into me discovering BLEScanResults foundDevices = pBLEScan->start(5); should have been BLEScanResults *foundDevices = pBLEScan->start(5, false);. Mildly annoyed.
-Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.
+It that a "pointer" (whatever that is) is assigned to a non "pointer" object. It appears that the code GPT gave me was incorrect. It included pBLEScan->start(5), where start() is not an existing function in the library. So I changed it into a lot of different variations, but nothing worked.  
+That made it time to go reading the library. Which did not at all improve my understanding of the code, so it was time to open the scan example.  
+That resulted into me discovering BLEScanResults foundDevices = pBLEScan->start(5); should have been BLEScanResults *foundDevices = pBLEScan->start(5, false);. Mildly annoyed.  
+Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.  
 
 In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff.
 
@@ -127,14 +103,14 @@ The code started printing like this:
 Which I assumed to mean there were no results.
 
 Adding some println statemenst I discovered that the functions used to call the device information were always empty.
-Adding some delays behind those statements gave me the RSSI's (used for getting the distance), but not the data I need to get it from a specific device.
-Very sometimes a name popped up, but mostly it was empty even with a bigger delay.
-So I switched to trying to get the addresses from the devices.
-When I finally got that to work I noticed all the adresses used lower case letters and not upper case letters, as I had seen when I read the mac-address from my phone. So I changed the case of the letters in my mac-adress to search.
+Adding some delays behind those statements gave me the RSSI's (used for getting the distance), but not the data I need to get it from a specific device.  
+Very sometimes a name popped up, but mostly it was empty even with a bigger delay.  
+So I switched to trying to get the addresses from the devices.  
+When I finally got that to work I noticed all the adresses used lower case letters and not upper case letters, as I had seen when I read the mac-address from my phone. So I changed the case of the letters in my mac-adress to search.  
 
 Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable. This also did not work, but I tried to do it with one of the devices I found in the list. I chose the one with the highest RSSI (which I assumed would be the closest). This way I could at least check whether the rest of the code was functional. This worked but, the returned distance was around 23 meters which means it was probably the most far away object. With this knowledge now I checked the address with the lowest RSSI value. This time the value returned was 8 meters. Which confirmed my new idea that lower RSSI values mean lower distances.
 
-I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.
+I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.  
 So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.
 
 ### Part 3 Combining part 1 and 2
@@ -144,15 +120,15 @@ The code is mainly build up from the code of part one with the essential parts o
 ``` if (device.getRSSI() < 75){ ```
 
 Whith in that statment the existing code for finding the currently playing song.
-While copying code do not forget this part ``` BLEScan* pBLEScan; ```. It should go after the libary calls and before the void setup
+While copying code do not forget this part ``` BLEScan* pBLEScan; ```. It should go after the libary calls and before the void setup.  
 
 The code for the button press also still remains to keep the system operational without bluetooth.
-It is possible that the code gets stuck in the compiling phase, just give it time, the code is either quite big or very poorly optimised.
-The previous line immediately came back to bite me. The program was too long and didn't fit on my board. Which meant I had to reduce the length by about 40%.
+It is possible that the code gets stuck in the compiling phase, just give it time, the code is either quite big or very poorly optimised.  
+The previous line immediately came back to bite me. The program was too long and didn't fit on my board. Which meant I had to reduce the length by about 40%.  
 The simplest solution I tried was to remove a load of comments. Which not too surprisingly did nothing at all.
 So I removed all the code required for the button. I didn't really want to do this, but I had to to make it work.
 This removed only 1 percent of the overshot length. So I removed some libraries I simply hoped I did not need.
-This was still not enough, so I went to chatGPT to shorten it even further.
+This was still not enough, so I went to chatGPT to shorten it even further.  
 
 ### Code for part 1
 ```C
