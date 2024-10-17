@@ -4,7 +4,8 @@ This manual will show you how to set up an arduino program that can control spot
 This project is a proof of concept for a concept as designed in a university course about IoT.
 
 At least that was the plan. Because of a number of setbacks. This has only partially been achieved. This project is devided into three parts. Part one is about getting information about the currently playing song ons spotify by pressing a button. Part two is about finding nearby bluetooth devices. Part three was supposed to be a combination of the two but this has not been achieved.
-If you do not want to follow steps, all the functional code can be found at the bottom of this page.
+If you do not want to follow steps, all the functional code can be found at the bottom of this page.  
+And if you want to know more about how this manual was written, I added the notes I made during the process as comments (for you to figure out how to read them).
 
 ## Hardware requirements
 - ESP 32 (or a different board that supports bluetooth and or wifi).
@@ -92,8 +93,8 @@ With that you the first part of the code and the first proof of concept is done.
 (Full code can be found a the bottom of this file).
 
 ## Part 2 Bluetooth connection
-The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.  
-To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.  
+The plan was to pause spotify when the bluetooth device got too far away. But since you need spotify premium for that. The new plan is to pull the currently playing data when a bluetooth device is near.  
+<!--To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.  
 This did not get the device I wanted, but did get a few other devices and some data I like to see, which includes something that could be distance.  
 The examples didn't get me any further, so I went to google. Which also didn't really help me, but did indicate it is kinda possible, just not too accurate.  
 But nothing about functional code still, which led me to chatGPT. [https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e]. Which resulted in the following error: Compilation error: 'init' is not a member of 'BLEDevice'. So a little google searching and screwing around later I figured out it might be a library I don't need causing the issue, so after removing that I got a little furhter.  
@@ -101,9 +102,70 @@ But ran into this error Compilation error: conversion from 'BLEScanResults*' to 
 It that a "pointer" (whatever that is) is assigned to a non "pointer" object. It appears that the code GPT gave me was incorrect. It included pBLEScan->start(5), where start() is not an existing function in the library. So I changed it into a lot of different variations, but nothing worked.  
 That made it time to go reading the library. Which did not at all improve my understanding of the code, so it was time to open the scan example.  
 That resulted into me discovering BLEScanResults foundDevices = pBLEScan->start(5); should have been BLEScanResults *foundDevices = pBLEScan->start(5, false);. Mildly annoyed.  
-Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.  
+Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.-->  
 
-In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff.
+This part might run into trouble if you have any BLE (Bluetooth Low Energy) libraries isntalled that are not the standard libraries that are on the board. To prevent this, it is recommended to remove those libraries.
+
+For this part code created by ChatGPT (https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e) is used, but it is not perfect, so some changes have to be made.
+```C
+#include <BLEDevice.h>
+#include <BLEScan.h>
+#include <BLEAdvertisedDevice.h>
+
+BLEScan* pBLEScan;
+
+void setup() {
+  Serial.begin(115200);
+  BLEDevice::init("");  // Initialize BLE
+  pBLEScan = BLEDevice::getScan();  // Create a BLE scanner object
+  pBLEScan->setActiveScan(true);    // Set scanning mode to active (faster)
+}
+
+void loop() {
+  BLEScanResults foundDevices = pBLEScan->start(5);  // Scan for 5 seconds
+  int deviceCount = foundDevices.getCount();         // Get the number of found devices
+
+  for (int i = 0; i < deviceCount; i++) {
+    BLEAdvertisedDevice device = foundDevices.getDevice(i);
+
+    // Check if this is the target Bluetooth device (match by address or name)
+    if (device.getAddress().toString() == "XX:XX:XX:XX:XX:XX") { // Replace with your target device's address
+      int rssi = device.getRSSI(); // Get RSSI value
+      Serial.print("Device found: ");
+      Serial.println(device.getAddress().toString().c_str());
+      Serial.print("RSSI: ");
+      Serial.println(rssi);
+
+      // Optionally, calculate approximate distance (based on RSSI)
+      float distance = calculateDistance(rssi);
+      Serial.print("Estimated Distance: ");
+      Serial.print(distance);
+      Serial.println(" meters");
+    }
+  }
+  pBLEScan->clearResults();  // Clear scan results
+  delay(2000);  // Wait before the next scan
+}
+
+float calculateDistance(int rssi) {
+  int txPower = -59;  // Typical RSSI value at 1 meter distance
+  if (rssi == 0) {
+    return -1.0; // if we cannot determine distance (signal strength is 0)
+  }
+
+  float ratio = rssi * 1.0 / txPower;
+  if (ratio < 1.0) {
+    return pow(ratio, 10);
+  } else {
+    float distance = (0.89976) * pow(ratio, 7.7095) + 0.111;
+    return distance;
+  }
+}
+```
+Replace ```BLEScanResults foundDevices = pBLEScan->start(5);``` with ```BLEScanResults *foundDevices = pBLEScan->start(5, false);```.  
+Replace 
+
+In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff. Reconnect your arduino and restart the uploading and it should be fine.
 
 The code started printing like this:  
 14:44:09.931 -> _string: construction from null is not valid  
