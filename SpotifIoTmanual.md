@@ -149,7 +149,9 @@ For the basis I use the example from Adafruit IO arduino > AdafruitIO20_shared_f
 
 For the the next part I use the Adafruitio_21_feed_read, to recieve the signal. To this I add the required code for the spotify part and send it to the ESP8266.
 
-While trying to send the stuff to the boards I noticed something strange. The code for the write (with the bluetooth) still was too big by excatly the same size. So i resorted bakc to the original bluetooth code in part two and checked and it was not too big. So I reversed the approach and put the code for sending data into the bluetooth document. At this point I also noticed that the config file should also be filled out manually.
+While trying to send the stuff to the boards I noticed something strange. The code for the write (with the bluetooth) still was too big by excatly the same size. So i resorted bakc to the original bluetooth code in part two and checked and it was not too big. So I reversed the approach and put the code for sending data into the bluetooth document. At this point I also noticed that the config file should also be filled out manually. Which once again had excactly the same result. Which is weird, becuase the amount of code changed.
+
+Some more testing resulted in the following knowledge: The bluetooth program takes 86% of the available memory and the sharing code by deafult takes 77% memory. While I was figuring this out, I decide to also check what the code of part 1 required, which was also 77 percent. The combination is therefore quite chalanging to get to work.
 
 
 ### Code for part 1
