@@ -4,6 +4,7 @@ This manual will show you how to set up an arduino program that can control spot
 This project is a proof of concept for a concept as designed in a university course about IoT.
 
 At least this was the plan. Because of a number of setbacks. This has only partially been achieved. This project is devided into three parts. Part one is about getting information about the currently playing song ons spotify by pressing a button. Part two is about finding nearby bluetooth devices. Part three was supposed to be a combination of the two but this has not been achieved.
+If you do not want to follow steps, all the functional code can be found at the bottom of this page.
 
 ## Hardware requirements for the first part
 - ESP 32 (or a different board that supports bluetooth and or wifi).
@@ -12,7 +13,7 @@ At least this was the plan. Because of a number of setbacks. This has only parti
 <img src="https://github.com/user-attachments/assets/0204c9f2-17ef-44d7-a0f6-832d4507cd95" alt="ESP32" width=400/>
 
 - Button
-	- I use a 4 pin button on a 3 pin connector. So if you use a different button some code may have to be changed.
+	- I use a 4 pin button on a 3 pin connector. If you use a different button some code may have to be changed.
 <img src="https://github.com/user-attachments/assets/4a51a36c-0e47-4846-a971-fc0f08795209" alt="Button" width=400/>
 
 
@@ -38,38 +39,36 @@ In terms of API/SDK's you need for this project it is only the WebAPI.
 For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. 
 
 Once the Output window says "Library installed" restart your Arduino IDE and open the spotifyarduino example "getRefreshToken". You will need this token later.
-In the corresponding places in the file add your spotify developer Client ID & Client Secret. And also add in the corresponding places your hotspot name and password.
+Follow the steps as indicated in the document untill you succesfully send the program to your arduino board and it succesfully connected to wifi.
 
-The provided code then is a bit unclear but you have to do the following:
+The provided expelnation from that point is a bit unclear but you have to do the following:
 
 1. In the serial monitor find the IP address
-2. Go to your spotify API settings and add "http://[IP address (the one from the serial monitor)]/callback/" as a redirect URI (and save your changes)
-3. Then on the device that is the hotspot go to a webbrowser and search for "http://[IP address (the one form the Serial monitor)]
+2. Go to your spotify API settings and add "http://[IP address (the one from the serial monitor)]/callback/" as a redirect URI (and save your changes). It is recommended to remove any existing redirect URI's.
+3. Then on the device that is the hotspot arduino is connected to go to a webbrowser and search for "http://[IP address (the one form the Serial monitor)]
 4. You should get to a blank page with a spotify authentication link, click the link and authenticate. This should redirect you to the callback page on which the refresh token is shown.
 
-Then go back tot the player controls example and add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the market spot)).
+With this information start the example playerControls from the spotify-api-arduino (only works if you have spotify premium, if you don't have that go to the next section). And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market). From this point you are on your own for this subject, because I was unable to test it. (Good luck (: )
 
+If you can see in your serial monitor that all the requests fail, it is probalby because you do not have acces to spotify premium. While creating this manual I made these notes about that:
 Here I ran into a little issue, where it would not be able to send the request. Printing failed to send request on everything.
-
 This appeared to be because of a combination of me being poor (not having spotify premium) and spotify being not a nice company and locking almost all the API stuff behind premium.
-
 So I switchted to a part of the API that doesn't require premium, which is the getCurrentlyPlaying example.
-
 In this example add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and the correct country code (in the market spot)).
-
 Which did work (correcly even), mark me relieved.
-
 So that makes a change of plans. Instead of pausing and resuming, the code will now request the currently playing song on button pressed. A bit of a shame, but it will serve as the proof of concept. 
-
 If you do have spotify premium, all other functions should be available to you as well. And can (probalby) be implemented in a similar way.
 
-### Start creating own code (finally)
+If you do not have spotify premium and still want to do something with the API you can only request information about the currently playing song. For that open the example getCurrentlyPlaying from the spotify-api-arduino. And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market).
+
+### Connecting the button
 If you have a 3 pin button it should be wired like this:
 On the button bourd you should see an S a - and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.
 <img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=400/>
 <img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=400/>
 <img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=400/>
 
+### Start creating own code
 Currently the code requests the currently playing content every minute. I will change this into a request on button press.
 
 I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.
@@ -91,7 +90,7 @@ can also be removed, but you can also leave them. So I just comment out them.
 Somewhere in the void loop I also added a ```Serial.println(buttonState); ``` for debugging. Do comment out that part once you are done with it, or you will forget and regret ever putting it in.
 With that you the first part of the code and the first proof of concept is done. (Full code can be found a the bottom of this file).
 
-### Part 2 Bluetooth connection
+## Part 2 Bluetooth connection
 The plan was to pause spotify when the bluetooth device got too far away. But since I need premium for that it will now be to pull the currently playing data when the bluetooth device is near.  
 To see if I can pull anything from bluetooth, I opened an example about bluetooth bt_classic_device_discovery. I think this will get me the info I need to get a bluetooth connection working.  
 This did not get the device I wanted, but did get a few other devices and some data I like to see, which includes something that could be distance.  
@@ -105,15 +104,15 @@ Then there were 2 more places where a . should be replaced by a ->, but luckely 
 
 In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff.
 
-The code started printing like this:
-14:44:09.931 -> _string: construction from null is not valid
-14:44:18.098 -> ring: construction from null is not valid
-14:44:26.247 -> basic_string: construction from null is not valid
-14:44:34.399 -> <Unknown>
-14:44:42.574 -> 
-14:44:50.741 ->  construction from null is not valid
-14:44:58.861 -> ng: construction from null is not valid
-Which I assumed to mean there were no results.
+The code started printing like this:  
+14:44:09.931 -> _string: construction from null is not valid  
+14:44:18.098 -> ring: construction from null is not valid  
+14:44:26.247 -> basic_string: construction from null is not valid  
+14:44:34.399 -> <Unknown>  
+14:44:42.574 ->   
+14:44:50.741 ->  construction from null is not valid  
+14:44:58.861 -> ng: construction from null is not valid  
+Which I assumed to mean there were no results.  
 
 Adding some println statemenst I discovered that the functions used to call the device information were always empty.
 Adding some delays behind those statements gave me the RSSI's (used for getting the distance), but not the data I need to get it from a specific device.  
@@ -126,7 +125,7 @@ Then I tried to turn off the random mac address, that increases privacy, but mig
 I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.  
 So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.
 
-### Part 3 Combining part 1 and 2
+## Part 3 Combining part 1 and 2
 For the final part I take the first two parts and combine them into one piece of code.
 The code is mainly build up from the code of part one with the essential parts of part 2. In the loop a second if statement is added that looks like this:
 
@@ -146,7 +145,7 @@ This was still not enough, so I went to chatGPT to shorten it even further. Whic
 At this point I don't have any more practical ideas left, but luckely I do also have a ESP8266.
 So the new plan is to use a ESP32 for the bluetooth part, the ESP8266 for the spotify part and then send data between them.
 
-### Part 3.5 spread the program across 2 arduino boards
+## Part 3.5 spread the program across 2 arduino boards
 For this part you need to create a new feed in the Adafruit IO.
 
 For the basis I use the example from Adafruit IO arduino > AdafruitIO20_shared_feed_write. This is the sending partion, so it gets combined with the bluetooth part of the code. To that I add the necesary code from the bluetooth code and I write this to the ESP32.
@@ -157,7 +156,7 @@ While trying to send the stuff to the boards I noticed something strange. The co
 
 Some more testing resulted in the following knowledge: The bluetooth program takes 86% of the available memory and the sharing code by deafult takes 77% memory. While I was figuring this out, I decide to also check what the code of part 1 required, which was also 77 percent. The combination is therefore quite hard to get to work.
 
-### Part 3.75 new solution
+## Part 3.75 new solution
 Since the complex way doesn't work I recieved a more simple way to achieve this, using I2C. It still uses two boards, but this time they are connected with wires instead of internet.
 The first test resulted in the message constantly being -1 or 117, but the sender did send 1 or 0. It also appears that the code I had for the spotify API no longer works. 
 After adding some extra code that setup the original variable, the standard value was 0, but didn't change ever.
