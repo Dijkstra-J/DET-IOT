@@ -268,8 +268,14 @@ If you have multiple BLE libraries installed the output window will tell you whi
 ### Wifi connection issues
 Check whether the credentials are correct and on your hotspot device, check wheter there are any devices connected to it.
 
+## Sources
+Arduino I2C: https://docs.arduino.cc/learn/communication/wire/ and https://www.instructables.com/I2C-between-Arduinos/  
+Arduino Spotify: https://github.com/witnessmenow/spotify-api-arduino
+Sending data between arduinos: https://www.figma.com/proto/DmNTg333RcKACOY0D5HC5R/To-Do-6---Tech-Manual?node-id=2-2&t=1YweFghvOKhqxqyJ-1
+Arduino BLE: https://forum.arduino.cc/t/getting-the-distance-to-a-bluetooth-beacon-with-hc-05/689957/6
 
-### Code for part 1
+
+## Code for part 1
 ```C
 /*******************************************************************
     Prints your currently playing track on spotify to the
@@ -512,7 +518,7 @@ void loop()
 }
 ```
 
-### Code for part 2
+## Code for part 2
 ```C
 #include <BLEDevice.h>
 #include <BLEScan.h>
@@ -576,7 +582,7 @@ float calculateDistance(int rssi) {
 }
 ```
 
-### Code for part 3 (Final code)
+## Code for part 3 (Final code)
 ```C
 Incorrect and not functional, therefore not uploaded
 ```
