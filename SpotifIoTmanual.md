@@ -270,9 +270,9 @@ Check whether the credentials are correct and on your hotspot device, check whet
 
 ## Sources
 Arduino I2C: https://docs.arduino.cc/learn/communication/wire/ and https://www.instructables.com/I2C-between-Arduinos/  
-Arduino Spotify: https://github.com/witnessmenow/spotify-api-arduino
-Sending data between arduinos: https://www.figma.com/proto/DmNTg333RcKACOY0D5HC5R/To-Do-6---Tech-Manual?node-id=2-2&t=1YweFghvOKhqxqyJ-1
-Arduino BLE: https://forum.arduino.cc/t/getting-the-distance-to-a-bluetooth-beacon-with-hc-05/689957/6
+Arduino Spotify: https://github.com/witnessmenow/spotify-api-arduino  
+Sending data between arduinos: https://www.figma.com/proto/DmNTg333RcKACOY0D5HC5R/To-Do-6---Tech-Manual?node-id=2-2&t=1YweFghvOKhqxqyJ-1  
+Arduino BLE: https://forum.arduino.cc/t/getting-the-distance-to-a-bluetooth-beacon-with-hc-05/689957/6  
 
 
 ## Code for part 1
