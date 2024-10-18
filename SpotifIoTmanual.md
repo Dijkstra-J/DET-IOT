@@ -163,11 +163,14 @@ float calculateDistance(int rssi) {
 }
 ```
 Replace ```BLEScanResults foundDevices = pBLEScan->start(5);``` with ```BLEScanResults *foundDevices = pBLEScan->start(5, false);```.  
-Replace 
+Replace ```foundDevices.getCount()``` with ```FoundDevices->getCount()```.  
+And replace ```device = foundDevices.getDevice(i)``` with ```foundDevices->getDevice(i)```.  
+Also add ```while(!Serial)``` after starting the serial monitor to prevent missing critical prints.
+You can choose to add extra print statements as you desire.
 
 In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff. Reconnect your arduino and restart the uploading and it should be fine.
 
-The code started printing like this:  
+<!--The code started printing like this:  
 14:44:09.931 -> _string: construction from null is not valid  
 14:44:18.098 -> ring: construction from null is not valid  
 14:44:26.247 -> basic_string: construction from null is not valid  
@@ -186,9 +189,14 @@ When I finally got that to work I noticed all the adresses used lower case lette
 Then I tried to turn off the random mac address, that increases privacy, but might find it harder for the arduino to find the device. And also went to the bluetooth settings and made the computer I am using to achieve this discoverable. This also did not work, but I tried to do it with one of the devices I found in the list. I chose the one with the highest RSSI (which I assumed would be the closest). This way I could at least check whether the rest of the code was functional. This worked but, the returned distance was around 23 meters which means it was probably the most far away object. With this knowledge now I checked the address with the lowest RSSI value. This time the value returned was 8 meters. Which confirmed my new idea that lower RSSI values mean lower distances.
 
 I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.  
-So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.
+So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.-->
+
+In case the code seems to be printing nothing at all, or only a part of what it should print, add some short (500ms) delays after the print statements.
+
+In the part that searches for a specific adress add the mac address (in lowercase, most devices show it in uppercase) of the device you are trying to find. I never got this code to find the device I wanted, so to test the code I added a random mac address the code printed and it did work. This means though that it is very hard to get the code to reply to a specific device. So instead I will code it to reply to any device that is close (RSSI higher then -71, or around 4 meters). Do keep in mind RSSi is not very accurate as it can fluctuate heavily, even if the device doesn't move.
 
 ## Part 3 Combining part 1 and 2
+<!-- With most of the code all ready for use I thought this would be easy, boy was I wrong
 For the final part I take the first two parts and combine them into one piece of code.
 The code is mainly build up from the code of part one with the essential parts of part 2. In the loop a second if statement is added that looks like this:
 
@@ -227,8 +235,10 @@ After a little more tweaking, that was mostly necesary because I didn't read the
 It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
 Sadly in terms of I2C no progress was made for a while, despite quite a few tweaks.
 After hours of tweaking I decided to test the most basic form (https://docs.arduino.cc/learn/communication/wire/) and discovered that didn't work. So I first started trying to get that to function.
-I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT wheter it could do anything for me, but it didn't result in anything functional. At this point I gave up.
+I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT wheter it could do anything for me, but it didn't result in anything functional.  
 
+At this point I gave up.-->
+Part 3 would be combining the code of the first two parts into a single program. Sadly the IDE said the program was too big for my ESP32. So I tried multiple things including using Adafruit to send data between them, but that code was also too big. Then I tried I2C, but I was unable to get any connection in that way. So after about 6 hours of trying a variet of things, I simply gave up. All the strugles of part three can be read as comments.
 
 ### Code for part 1
 ```C
@@ -539,5 +549,5 @@ float calculateDistance(int rssi) {
 
 ### Code for part 3 (Final code)
 ```C
-Incorrect, therefore not uploaded
+Incorrect and not functional, therefore not uploaded
 ```
