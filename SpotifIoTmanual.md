@@ -41,7 +41,7 @@ Here you create an app. Which you have to give a name, description and a redirec
 In terms of API/SDK's you need for this project it is only the WebAPI.  
 
 ### Step 2 getting the required libraries
-For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. Also install the Arduino JSON library from the librarie manager.
+For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. Also install the Arduino JSON library from the library manager.
 
 Once the Output window says "Library installed" restart your Arduino IDE.
 
@@ -74,10 +74,10 @@ If you do not have spotify premium and still want to do something with the API y
 
 ### Step 5 Connecting the button
 If you have a 3 pin button it should be wired like this:
-On the button bourd you should see an "S", a "-" and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.  
-<img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=300/>
-<img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=300/>
-<img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=300/>
+On the button bourd you should see an "S", a "-" and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests. Or having to figure out which part of you code is broken, when it is actually just the button not being wired correctly. 
+<img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=33%/>
+<img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=33%/>
+<img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=33%/>
 
 ### Step 6 Start creating own code
 Most of the time code is replaced, you can also choose to comment out the existing code and add the new code below.
@@ -180,7 +180,7 @@ And replace ```device = foundDevices.getDevice(i)``` with ```foundDevices->getDe
 Also add ```while(!Serial)``` after starting the serial monitor to prevent missing critical prints.
 You can choose to add extra print statements as you desire.
 
-### Step 4 Do not light your building on fire
+### Step 4 Do *not* light your building on fire
 In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff. Reconnect your arduino and restart the uploading and it should be fine.
 
 <!--The code started printing like this:  
@@ -253,6 +253,15 @@ I didn't get that to work, so I switched which board did which and nothing chang
 
 At this point I gave up.-->
 Part 3 would be combining the code of the first two parts into a single program. Sadly the IDE said the program was too big for my ESP32. So I tried multiple things including using Adafruit to send data between them, but that code was also too big. Then I tried I2C, but I was unable to get any connection in that way. So after about 6 hours of trying a variet of things, I simply gave up. All the strugles of part three can be read as comments.
+
+## Possible Issues and solutions
+### Serial.println() prints nothing or only parts.
+Add a while(!Serial) after starting the serial monitor, this prevents anything being printed before the Serial monitor is started (for extra safety, you can also add a delay (5-10 seconds) after this while).  
+Add short delays (500ms) after every Serial.println to see if this changes anything. If it does, that was the solution (try to lower the delay as much as possible). If it doesn't there probably is nothing to be printed.
+### Spotify requests fail
+If all the spotify requests fail, this is most likely because the account that is getting the requests is not a premium account (this *may* also occur with free trials and student premium subscriptions)
+### Multiple BLE libraries installed.
+If you have multiple BLE libraries installed the output window will tell you which one is used. It is possible that wrong one gets used and the code can't find some functions/variables. In this case remove all the BLE libraries that are not standard on the board. If the issue persists, check wheter all libraries are included correctly.
 
 ### Code for part 1
 ```C
@@ -566,5 +575,6 @@ float calculateDistance(int rssi) {
 Incorrect and not functional, therefore not uploaded
 ```
 
-<!-- Extra note for the professors, whom I simply have to assume will be reading this part
-The manual had to be for someone of you own skill level, therefore I have chosen to simply include a lot of code, as that is how I like my manuals. Screenshots of code do not appeal to me in any way and if I could find a button within a reasonable amount of time I also believe no further explenation of that is required either.-->
+<!-- Extra note for the professors, whom I simply have to assume will be reading this part  
+The manual had to be for someone of you own skill level, therefore I have chosen to simply include a lot of code, as that is how I like my manuals. Screenshots of code do not appeal to me in any way and if I could find a button within a reasonable amount of time I also believe no further explenation of that is required either.  
+The same goes for screenshots of error messages, I do not need that, as the IDE tells you excatly what the error is. Simply describing said error is enough for me to start figuring stuff out.-->
