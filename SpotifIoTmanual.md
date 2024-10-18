@@ -176,7 +176,7 @@ float calculateDistance(int rssi) {
 ### Step 3 Fixing the code ChatGPT created.
 Replace ```BLEScanResults foundDevices = pBLEScan->start(5);``` with ```BLEScanResults *foundDevices = pBLEScan->start(5, false);```.  
 Replace ```foundDevices.getCount()``` with ```FoundDevices->getCount()```.  
-And replace ```device = foundDevices.getDevice(i)``` with ```foundDevices->getDevice(i)```.  
+And replace ```foundDevices.getDevice(i)``` with ```foundDevices->getDevice(i)```.  
 Also add ```while(!Serial)``` after starting the serial monitor to prevent missing critical prints.
 You can choose to add extra print statements as you desire.
 
