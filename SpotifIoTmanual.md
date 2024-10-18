@@ -225,7 +225,7 @@ The previous line immediately came back to bite me. The program was too long and
 The simplest solution I tried was to remove a load of comments. Which not too surprisingly did nothing at all.
 So I removed all the code required for the button. I didn't really want to do this, but I had to to make it work.
 This removed only 1 percent of the overshot length. So I removed some libraries I simply hoped I did not need.
-This was still not enough, so I went to chatGPT to shorten it even further. Which also achieved nothing at all.
+This was still not enough, so I went to chatGPT (https://chatgpt.com/share/67120fe4-9bcc-800d-ac9b-4b2a45231966) to shorten it even further. Which also achieved nothing at all.
 
 At this point I don't have any more practical ideas left, but luckely I do also have a ESP8266.
 So the new plan is to use a ESP32 for the bluetooth part, the ESP8266 for the spotify part and then send data between them.
@@ -249,12 +249,13 @@ After a little more tweaking, that was mostly necesary because I didn't read the
 It still didn't work after that, so I swithed the default value to 1, to check wheter the other code still worked, which it did.
 Sadly in terms of I2C no progress was made for a while, despite quite a few tweaks.
 After hours of tweaking I decided to test the most basic form (https://docs.arduino.cc/learn/communication/wire/) and discovered that didn't work. So I first started trying to get that to function.
-I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT wheter it could do anything for me, but it didn't result in anything functional.  
+I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT (https://chatgpt.com/share/67120fd3-5248-800d-bc42-57631c75de01) wheter it could do anything for me, but it didn't result in anything functional.  
 
 At this point I gave up.-->
 Part 3 would be combining the code of the first two parts into a single program. Sadly the IDE said the program was too big for my ESP32. So I tried multiple things including using Adafruit to send data between them, but that code was also too big. Then I tried I2C, but I was unable to get any connection in that way. So after about 6 hours of trying a variet of things, I simply gave up. All the strugles of part three can be read as comments.
 
-## Possible Issues and solutions
+## Troubleshooting
+Possible Issues and solutions
 ### Serial.println() prints nothing or only parts.
 Add a while(!Serial) after starting the serial monitor, this prevents anything being printed before the Serial monitor is started (for extra safety, you can also add a delay (5-10 seconds) after this while).  
 Add short delays (500ms) after every Serial.println to see if this changes anything. If it does, that was the solution (try to lower the delay as much as possible). If it doesn't there probably is nothing to be printed.
@@ -262,6 +263,9 @@ Add short delays (500ms) after every Serial.println to see if this changes anyth
 If all the spotify requests fail, this is most likely because the account that is getting the requests is not a premium account (this *may* also occur with free trials and student premium subscriptions)
 ### Multiple BLE libraries installed.
 If you have multiple BLE libraries installed the output window will tell you which one is used. It is possible that wrong one gets used and the code can't find some functions/variables. In this case remove all the BLE libraries that are not standard on the board. If the issue persists, check wheter all libraries are included correctly.
+### Wifi connection issues
+Check whether the credentials are correct and on your hotspot device, check wheter there are any devices connected to it.
+
 
 ### Code for part 1
 ```C
