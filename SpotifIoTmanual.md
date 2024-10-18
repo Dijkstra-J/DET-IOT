@@ -207,7 +207,9 @@ So to be able to create my final system, I will make the trigger do the followin
 In case the code seems to be printing nothing at all, or only a part of what it should print, add some short (500ms) delays after the print statements.  
 
 ### Step 6 Plan failed, make the code do something useful.
-In the part that searches for a specific adress add the mac address (in lowercase, most devices show it in uppercase) of the device you are trying to find. I never got this code to find the device I wanted, so to test the code I added a random mac address the code printed and it did work. This means though that it is very hard to get the code to reply to a specific device. So instead I will code it to reply to any device that is close (RSSI higher then -71, or around 4 meters). Do keep in mind RSSi is not very accurate as it can fluctuate heavily, even if the device doesn't move.
+In the part that searches for a specific adress add the mac address (in lowercase, most devices show it in uppercase) of the device you are trying to find. I never got this code to find the device I wanted, so to test the code I added a random mac address the code printed and it did work. This means though that it is very hard to get the code to reply to a specific device. So instead I will code it to reply to any device that is close (RSSI higher then -71, or around 4 meters). Do keep in mind RSSi is not very accurate as it can fluctuate heavily, even if the device doesn't move.  
+
+(Full code can be found at the bottom of this file)
 
 ## Part 3 Combining part 1 and 2
 <!-- With most of the code all ready for use I thought this would be easy, boy was I wrong
