@@ -33,14 +33,22 @@ And if you want to know more about how this manual was written, I added the note
 - Spotify API
 	- The options are very limited for a spotify free account, to be able to do anything meaningfull you need a spotify premium subscription. That being said, this manual was written using a spotify free account.
 
-## Part 1, button
+## Part 1 Button
+Getting data from spotify when pressing a button.
+### Step 1 Getting a Spotify API code.
 For anything to work we need a spotify API, you can create it at https://developer.spotify.com/.  
 Here you create an app. Which you have to give a name, description and a redirect URI. For now the redirect URI can be whatever you want, I used this page when I made it. It will be changed later.  
 In terms of API/SDK's you need for this project it is only the WebAPI.  
-For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. 
 
-Once the Output window says "Library installed" restart your Arduino IDE and open the spotifyarduino example "getRefreshToken". You will need this token later.
-Follow the steps as indicated in the document untill you succesfully send the program to your arduino board and it succesfully connected to wifi.
+### Step 2 getting the required libraries
+For starters we make spotify react to a button. All I am interested in for now is just a play/pause toggle, because this is just a proof of concept. To achieve this, I took this project https://github.com/witnessmenow/spotify-api-arduino/blob/main/examples/playerControls/playerControls.ino and modified it to fit my needs. For this to work you need a library you can find here https://github.com/witnessmenow/spotify-api-arduino. Also install the Arduino JSON library from the librarie manager.
+
+Once the Output window says "Library installed" restart your Arduino IDE.
+
+### Step 3 Refresh token
+The refresh token is necesary to make the rest of the API work.  
+Open the spotifyarduino example "getRefreshToken".
+Follow the steps as indicated in the document untill you succesfully upload the program to your arduino board and it succesfully connected to wifi.
 
 The provided expelnation from that point is a bit unclear but you have to do the following:
 
@@ -49,6 +57,7 @@ The provided expelnation from that point is a bit unclear but you have to do the
 3. Then on the device that is the hotspot arduino is connected to go to a webbrowser and search for "http://[IP address (the one form the Serial monitor)]
 4. You should get to a blank page with a spotify authentication link, click the link and authenticate. This should redirect you to the callback page on which the refresh token is shown.
 
+### Step 4 Example programs to kickstart the coding process
 With this information start the example playerControls from the spotify-api-arduino (only works if you have spotify premium, if you don't have that go to the next section). And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market). From this point you are on your own for this subject, because I was unable to test it. (Good luck (: )
 
 If you can see in your serial monitor that all the requests fail, it is probalby because you do not have acces to spotify premium. 
@@ -63,14 +72,14 @@ If you do have spotify premium, all other functions should be available to you a
 
 If you do not have spotify premium and still want to do something with the API you can only request information about the currently playing song. For that open the example getCurrentlyPlaying from the spotify-api-arduino. And add all the required information (spotify developer Client ID & Client Secret, Hotpsot name and password and spotify refresh token and correct country code (in the Spotify market).
 
-### Connecting the button
+### Step 5 Connecting the button
 If you have a 3 pin button it should be wired like this:
 On the button bourd you should see an "S", a "-" and a middle pin. The S pin goes to the data pin (D15 in my case) the - pin goes to the power output (3v3 in my case) and the middle pin goes to the ground. Make sure to test whether this works with a more simple program (the button example with a few added println statements works fine) to prevent getting spammed with requests.  
 <img src="https://github.com/user-attachments/assets/5dd9c349-3469-4b18-bf4e-d5e023ee5dc7" alt="wiring1" width=300/>
 <img src="https://github.com/user-attachments/assets/eb72b2f0-4265-4bb3-9e3c-e8b9e2a17178" alt="Button" width=300/>
 <img src="https://github.com/user-attachments/assets/525105bb-dd97-49d6-a946-61a8339e7978" alt="Button" width=300/>
 
-### Start creating own code
+### Step 6 Start creating own code
 Most of the time code is replaced, you can also choose to comment out the existing code and add the new code below.
 Currently the code requests the currently playing content every minute. I will change this into a request on button press.
 <!--I happen to have some code lying around from a previous project that works with buttons, so that saves me a lot of time.-->
@@ -103,9 +112,10 @@ It that a "pointer" (whatever that is) is assigned to a non "pointer" object. It
 That made it time to go reading the library. Which did not at all improve my understanding of the code, so it was time to open the scan example.  
 That resulted into me discovering BLEScanResults foundDevices = pBLEScan->start(5); should have been BLEScanResults *foundDevices = pBLEScan->start(5, false);. Mildly annoyed.  
 Then there were 2 more places where a . should be replaced by a ->, but luckely the Arduino IDE was able to tell me where that was the case. And then I finally got the code to the board.-->  
-
+### Step 1 Get rid of possibly conflicting libraries.
 This part might run into trouble if you have any BLE (Bluetooth Low Energy) libraries isntalled that are not the standard libraries that are on the board. To prevent this, it is recommended to remove those libraries.
 
+### Step 2 Code from ChatGPT to kickstart the coding process
 For this part code created by ChatGPT (https://chatgpt.com/share/670fa09c-4d0c-800d-9671-41ab1ca80d7e) is used, but it is not perfect, so some changes have to be made.
 ```C
 #include <BLEDevice.h>
@@ -162,12 +172,15 @@ float calculateDistance(int rssi) {
   }
 }
 ```
+
+### Step 3 Fixing the code ChatGPT created.
 Replace ```BLEScanResults foundDevices = pBLEScan->start(5);``` with ```BLEScanResults *foundDevices = pBLEScan->start(5, false);```.  
 Replace ```foundDevices.getCount()``` with ```FoundDevices->getCount()```.  
 And replace ```device = foundDevices.getDevice(i)``` with ```foundDevices->getDevice(i)```.  
 Also add ```while(!Serial)``` after starting the serial monitor to prevent missing critical prints.
 You can choose to add extra print statements as you desire.
 
+### Step 4 Do not light your building on fire
 In the exceptionally rare case a fire alarm goes of in your building at around an about exactly this point, while you try to upload the newest version. You may get a Failed uploading: uploading error: exit status 1, when you pack your stuff. Reconnect your arduino and restart the uploading and it should be fine.
 
 <!--The code started printing like this:  
@@ -190,9 +203,10 @@ Then I tried to turn off the random mac address, that increases privacy, but mig
 
 I have no idea why I can't find the device I want to find and also can't find out why I very rarely get device names, although this might have something to do with privacy and security.  
 So to be able to create my final system, I will make the trigger do the following: Everytime a Bluetooth device gets within an RSSI of -71 (around 4 meters) get the currently playing song from the spotify API (Full code can be found a the bottom of this file). Do keep in mind that RSSI is by no means a very accurate reprsentation of distance it can easily fluctuate with multiple meters.-->
+### Step 5 Dealing with code that isn't printing correctly
+In case the code seems to be printing nothing at all, or only a part of what it should print, add some short (500ms) delays after the print statements.  
 
-In case the code seems to be printing nothing at all, or only a part of what it should print, add some short (500ms) delays after the print statements.
-
+### Step 6 Plan failed, make the code do something useful.
 In the part that searches for a specific adress add the mac address (in lowercase, most devices show it in uppercase) of the device you are trying to find. I never got this code to find the device I wanted, so to test the code I added a random mac address the code printed and it did work. This means though that it is very hard to get the code to reply to a specific device. So instead I will code it to reply to any device that is close (RSSI higher then -71, or around 4 meters). Do keep in mind RSSi is not very accurate as it can fluctuate heavily, even if the device doesn't move.
 
 ## Part 3 Combining part 1 and 2
@@ -551,3 +565,6 @@ float calculateDistance(int rssi) {
 ```C
 Incorrect and not functional, therefore not uploaded
 ```
+
+<!-- Extra note for the professors, whom I simply have to assume will be reading this part
+The manual had to be for someone of you own skill level, therefore I have chosen to simply include a lot of code, as that is how I like my manuals. Screenshots of code do not appeal to me in any way and if I could find a button within a reasonable amount of time I also believe no further explenation of that is required either.-->
