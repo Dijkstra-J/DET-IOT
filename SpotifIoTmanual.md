@@ -264,7 +264,8 @@ Add short delays (500ms) after every Serial.println to see if this changes anyth
 ### Spotify requests fail
 If all the spotify requests fail, this is most likely because the account that is getting the requests is not a premium account (this *may* also occur with free trials and student premium subscriptions)
 ### Multiple BLE libraries installed.
-If you have multiple BLE libraries installed the output window will tell you which one is used. It is possible that wrong one gets used and the code can't find some functions/variables. In this case remove all the BLE libraries that are not standard on the board. If the issue persists, check wheter all libraries are included correctly.
+If you have multiple BLE libraries installed the output window will tell you which one is used. It is possible that wrong one gets used and the code can't find some functions/variables. In this case remove all the BLE libraries that are not standard on the board. If the IDE says they are removed, but they stay available, try running the IDE as an administrator or find the files in [path to your sketchbook]/libaries.  
+If the issue persists, check wheter all libraries are included correctly. 
 ### Wifi connection issues
 Check whether the credentials are correct and on your hotspot device, check wheter there are any devices connected to it.
 
