@@ -254,7 +254,8 @@ After hours of tweaking I decided to test the most basic form (https://docs.ardu
 I didn't get that to work, so I switched which board did which and nothing changed. Then I asked ChatGPT (https://chatgpt.com/share/67120fd3-5248-800d-bc42-57631c75de01) wheter it could do anything for me, but it didn't result in anything functional.  
 
 At this point I gave up.-->
-Part 3 would be combining the code of the first two parts into a single program. Sadly the IDE said the program was too big for my ESP32. So I tried multiple things including using Adafruit to send data between them, but that code was also too big. Then I tried I2C, but I was unable to get any connection in that way. So after about 6 hours of trying a variet of things, I simply gave up. All the strugles of part three can be read as comments.
+Part 3 would be combining the code of the first two parts into a single program. Sadly the IDE said the program was too big for my ESP32. It appears that it is not possible to call the libraries for bluetooth and wifi in the same program.  
+So I tried multiple things including using Adafruit to send data between them, but that code was also too big (also uses the wifi libraries). Then I tried I2C, but I was unable to get any connection in that way. So after about 6 hours of trying a variety of things, I simply gave up. All the strugles of part three can be read as comments.
 
 ## Troubleshooting
 Possible Issues and solutions
